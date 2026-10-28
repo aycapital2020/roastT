@@ -63,7 +63,7 @@ button { font: inherit; cursor: pointer; }
 .stepper li.active { color: var(--ink); }
 .stepper li.active::before { background: var(--accent); box-shadow: 0 0 0 3px rgba(56, 189, 248, .25); }
 .top-actions { display: flex; align-items: center; gap: 10px; }
-.usage { font-size: 12px; color: var(--ink-mute); }
+.usage { font-size: 12px; color: var(--ink-mute); white-space: nowrap; }
 .ghost {
   background: transparent; border: 1px solid var(--hairline-strong); color: var(--ink-soft);
   padding: 7px 14px; border-radius: 999px; font-weight: 500; font-size: 13px; transition: border-color .2s, color .2s;
@@ -361,7 +361,7 @@ button { font: inherit; cursor: pointer; }
 .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: var(--surface-3); color: var(--ink); border: 1px solid var(--hairline-strong); padding: 10px 16px; border-radius: 10px; z-index: 60; font-size: 13.5px; max-width: 90vw; }
 
 /* ---------------- responsive ---------------- */
-@media (max-width: 1220px) {
+@media (max-width: 1400px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .panel { position: static; max-height: 70vh; }
   .stepper li { padding: 6px 8px; }
@@ -489,7 +489,7 @@ button { font: inherit; cursor: pointer; }
   .top-actions .ghost { padding: 6px 11px; font-size: 12.5px; }
 }
 .typein .wd { display: inline-block; white-space: nowrap; }
-@media (max-width: 1220px) {
+@media (max-width: 1400px) {
   .topbar { flex-wrap: wrap; row-gap: 8px; }
   .top-actions { margin-left: auto; }
   .stepper { order: 3; width: 100%; margin: 0; justify-content: center; overflow-x: auto; }
@@ -606,4 +606,81 @@ html.sb-mobile .sb-lock { display: none; }
   :root { --sb-w: min(300px, 86vw); }
   .sb-act { width: 36px; height: 36px; }
   .sb-open { padding: 12px 10px; }
+}
+
+/* ---------------- accessibility, small screens and touch (UX pass) ---------------- */
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.composer-hint { margin: -2px auto 2px; max-width: 52ch; font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+.composer-hint b { color: var(--ink); font-weight: 600; }
+button:focus-visible, summary:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cap-text, .toast, .wc-sub, .feed-card p { overflow-wrap: anywhere; }
+.v-why li > span:only-child { grid-column: 1 / -1; }
+.toast { bottom: calc(22px + env(safe-area-inset-bottom)); box-shadow: 0 14px 40px -12px rgba(0, 0, 0, .7); line-height: 1.45; }
+.v-sec:has(.scorecard) { overflow-x: auto; }
+
+@media (max-width: 820px) {
+  .stage-wrap { overflow-x: clip; }
+  .topbar { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+  .composer h2 { font-size: 22px; }
+  .composer textarea { font-size: 16px; } /* 16px stops iOS zooming into the field */
+  .cap-text { font-size: 17px; }
+  .playbar { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom)); flex-wrap: wrap; row-gap: 6px; border-radius: 22px; }
+  .playbar .queue { overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 auto; }
+  .skip { white-space: nowrap; }
+  .toast { left: 12px; right: 12px; transform: none; max-width: none; text-align: center; bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .sheet { padding: 12px 0 0; }
+  .sheet-inner { border-radius: 18px 18px 0 0; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+  .v-top { flex-direction: column; align-items: stretch; gap: 14px; }
+  .v-top .actions { justify-content: stretch; }
+  .v-top .actions > * { flex: 1 1 140px; }
+  .v-foot { flex-direction: column; align-items: stretch; }
+  .v-foot .ghost { width: 100%; }
+  .plate .row button { flex: 1 1 140px; }
+  .card-dialog { width: calc(100vw - 24px); max-width: none; padding: 18px; max-height: calc(100dvh - 24px); }
+  .card-dialog form .ghost { width: 100%; }
+  .guide { font-size: 14px; }
+}
+.nameplate .nm-short { display: none; }
+@media (max-width: 560px) {
+  .nameplate .nm-full { display: none; }
+  .nameplate .nm-short { display: inline; }
+  .topbar { position: static; }
+  .top-actions { order: 2; width: 100%; margin-left: 0; display: flex; flex-wrap: wrap; justify-content: stretch; gap: 8px; }
+  .top-actions .ghost { flex: 1 1 auto; }
+  .top-actions .usage { display: none; }
+  .top-actions .ghost { padding: 4px 10px; font-size: 12.5px; text-align: center; }
+  .playbar { padding-left: 10px; }
+  .playbar .queue { font-size: 11px; }
+  .playbar .skip { flex: 1 1 40%; min-width: max-content; }
+  .playbar .speed { flex: 1 1 auto; display: flex; justify-content: center; }
+}
+@media (max-width: 380px) {
+  .playbar .queue { display: none; }
+  .playbar { justify-content: space-between; padding-left: 4px; }
+}
+/* thumb-sized tap targets on touch screens and small windows */
+@media (pointer: coarse), (max-width: 820px) {
+  .ghost, .pill, .convene, .plate .row button, .history button, .tabs button { min-height: 44px; }
+  .samples button { min-height: 44px; padding: 6px 14px; font-size: 13px; }
+  .mode span { min-height: 44px; display: flex; flex-direction: column; justify-content: center; }
+  .seat-choice span { min-height: 44px; display: flex; align-items: center; padding: 6px 14px; font-size: 13px; }
+  .speed button, .skip { min-height: 44px; min-width: 44px; }
+  .v-more summary { min-height: 44px; }
+  .history .pdf { min-width: 64px; }
+}
+@media (max-width: 560px) {
+  .cap-head { flex-wrap: wrap; row-gap: 4px; }
+  .cap-who { white-space: nowrap; }
+  .cap-tag { order: 3; flex-basis: 100%; margin-left: 44px; text-align: left; }
+}
+/* phones: stance chips live in the caption and the key points, not on crowded nameplates */
+@media (max-width: 560px) { .nameplate .meta { display: none !important; } }
+/* read-aloud controls on touch: keep the small play icon but give it a thumb-sized hit area */
+@media (pointer: coarse), (max-width: 820px) {
+  .say { position: relative; width: 32px; height: 32px; }
+  .say::after { content: ""; position: absolute; inset: -6px; }
+  .listen { min-width: 92px; }
+}
+@media (pointer: coarse), (max-width: 820px) {
+  .sb-icon { width: 44px; height: 44px; }
 }

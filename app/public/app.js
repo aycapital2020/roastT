@@ -118,13 +118,14 @@ async function boot() {
     onDeleted: (id) => { if (state.session === id && state.running !== id) reset(); },
     toast,
   });
-  new ResizeObserver(() => { layoutStage(); drawLinks(); }).observe($("#stage"));
+  const ro = new ResizeObserver(() => { layoutStage(); drawLinks(); });
+  ro.observe($("#stage")); ro.observe($("#composer"));
   startBlinking();
   reset();
   typeIn($("#composer h2"));
   fetch("/api/config").then((x) => x.json()).then((c) => {
     state.config = c;
-    if (c.auth === "none") toast("No AI Gateway credentials. Set AI_GATEWAY_API_KEY in .env (or run `vercel env pull`) and restart.");
+    if (c.auth === "none") { console.warn("No AI Gateway credentials. Set AI_GATEWAY_API_KEY in .env (or run `vercel env pull`) and restart."); toast("The room isn't connected to its AI service yet, so new councils can't run. You can still watch past councils."); }
   }).catch(() => {});
   setInterval(tickWait, 1000);
 }
@@ -219,7 +220,7 @@ function renderSeats(keys) {
     </div>`).join("");
   $("#plates").innerHTML = seats.map((s) => `
     <div class="nameplate" id="plate-${s.key}" data-seat="${s.key}">
-      <b>${esc(s.short === "Gary V" ? "Gary V" : s.name)}</b>
+      <b><span class="nm-full">${esc(s.short === "Gary V" ? "Gary V" : s.name)}</span><span class="nm-short" aria-hidden="true">${esc(s.short)}</span></b>
       <small>${esc(s.pillar)}</small>
       <div class="meta"><span class="pips" title="Weight on this decision"></span><span class="chip" hidden></span><span class="score" hidden></span></div>
     </div>`).join("");
@@ -233,6 +234,7 @@ function layoutStage() {
   const stage = $("#stage");
   const W = stage.clientWidth;
   const narrow = matchMedia("(max-width: 820px)").matches;
+  stage.style.minHeight = ""; // measure the stage's own size; room for the composer is added below
   const H = narrow ? Math.round(W * 0.62) : stage.clientHeight;
   const cx = W / 2, cy = H * (narrow ? 0.98 : 0.9), rx = W * 0.48, ry = H * (narrow ? 0.46 : 0.42);
   const t = $("#table");
@@ -240,8 +242,10 @@ function layoutStage() {
   const edge = (x) => cy - ry * Math.sqrt(Math.max(0, 1 - ((x - cx) / rx) ** 2));
   // seats spread evenly along the far edge; past seven they shrink to fit
   const n = state.table.length;
-  const xs = n === 1 ? [0.5] : state.table.map((_, i) => 0.085 + (0.83 * i) / (n - 1));
   const fit = Math.min(1, 6 / Math.max(1, n - 1));
+  // on narrow screens the end seats are big relative to the width; inset them so no face is cut off
+  const m = narrow ? Math.min(0.2, Math.max(0.085, (H * 0.58 * fit * 0.42) / W)) : 0.085;
+  const xs = n === 1 ? [0.5] : state.table.map((_, i) => m + ((1 - 2 * m) * i) / (n - 1));
   state.geo = {};
   state.table.forEach((k, i) => {
     const s = state.byKey[k];
@@ -252,8 +256,15 @@ function layoutStage() {
     const el = $(`#seat-${s.key}`);
     Object.assign(el.style, { left: `${x - size / 2}px`, top: `${bottom - size}px`, width: `${size}px`, height: `${size}px`, zIndex: 10 + Math.round(d * 10) });
     const pl = $(`#plate-${s.key}`);
-    pl.style.left = `${x}px`;
-    pl.style.top = `${edge(x) + H * 0.01}px`; // straddles the table edge, over the chest
+    const half = narrow ? (pl.offsetWidth || 0) / 2 + 4 : 0;
+    pl.style.left = `${narrow ? Math.min(W - half, Math.max(half, x)) : x}px`;
+    // on phones a full table's nameplates would overlap, so every other one drops a row
+    let y = edge(x) + H * 0.01; // straddles the table edge, over the chest
+    if (narrow && W < 560 && n > 4 && i % 2) {
+      const nb = [i - 1, i + 1].filter((j) => j < n).map((j) => edge(W * xs[j]) + H * 0.01);
+      y = Math.max(y, ...nb) + (pl.offsetHeight || 20) + 2; // clear of both neighbours
+    }
+    pl.style.top = `${y}px`;
     state.geo[s.key] = { x, head: bottom - size * 0.72, top: bottom - size * 0.9, size };
   });
   const c = $("#center");
@@ -264,7 +275,15 @@ function layoutStage() {
     // the captions start below the lowest nameplate they could collide with
     const inner = (n > 2 ? state.table.slice(1, -1) : state.table).map((k) => $(`#plate-${k}`));
     const top = Math.max(...inner.map((p) => p.offsetTop + p.offsetHeight / 2)) + H * 0.035;
-    Object.assign(c.style, { left: `${W * 0.2}px`, width: `${W * 0.6}px`, top: `${top}px`, height: `${H - top - H * 0.09}px` });
+    let h = H - top - H * 0.09;
+    // on shorter laptop screens the first-run composer is taller than the room under the seats:
+    // let the stage grow downward so the Convene button is never cut off (seat geometry stays put)
+    const comp = $("#composer");
+    if (comp && !comp.hidden && comp.scrollHeight > h) {
+      h = comp.scrollHeight + 8;
+      stage.style.minHeight = `${Math.ceil(top + h + 24)}px`;
+    }
+    Object.assign(c.style, { left: `${W * 0.2}px`, width: `${W * 0.6}px`, top: `${top}px`, height: `${h}px` });
   }
   const sp = state.speaking ? state.geo[state.speaking] : null;
   if (sp) moveSpot(state.speaking);
@@ -432,6 +451,7 @@ function begin(id) {
   reset();
   state.session = id;
   $("#composer").hidden = true;
+  layoutStage();
   $("#waiting").hidden = true;
   $("#playbar").hidden = false;
   $("#panelHead").textContent = "Key points";
@@ -445,6 +465,7 @@ function begin(id) {
 async function convene(prompt, mode, table) {
   const id = `${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
   begin(id);
+  lastSeatError = "";
   const rec = { id, prompt, mode, status: "running", title: "", events: [], started: Date.now() };
   const ctl = new AbortController();
   Object.assign(state, { running: id, abort: ctl, runningRec: rec });
@@ -455,7 +476,7 @@ async function convene(prompt, mode, table) {
     if (ev.type === "setup") { rec.title = ev.title; refreshSidebar(); }
     if (ev.type !== "seat_error") rec.events.push(ev);
     if (state.session !== id) return; // the user left this council; keep recording it
-    if (ev.type === "seat_error") return toast(`${state.byKey[ev.seat]?.short || ev.seat} could not answer: ${ev.error}`);
+    if (ev.type === "seat_error") { lastSeatError = ev.error; return toast(`${state.byKey[ev.seat]?.short || ev.seat} could not answer. ${friendlyError(ev.error)}`); }
     player.push(ev);
     refreshUsage();
   };
@@ -510,7 +531,21 @@ async function handle(ev) {
     case "cruxes": await onCruxes(ev); break;
     case "draft": await onDraft(ev.draft); break;
     case "verdict": state.wait = null; onVerdict(ev); break;
-    case "error": state.wait = null; toast(`The council stopped: ${ev.error}`); chairSays(`The council stopped: ${ev.error}`, { say: "The council stopped. The model could not answer." }); break;
+    case "error": {
+      state.wait = null;
+      // a failed round only says how many seats answered; the seats' own errors say why
+      const why = friendlyError(/^Round \d+ failed/.test(ev.error || "") && lastSeatError ? lastSeatError : ev.error);
+      toast("The council stopped before its verdict.");
+      chairSays(`The council stopped. ${why}`, { say: "The council stopped before its verdict." });
+      $("#playbar").hidden = true;
+      if (!state.replaying) {
+        const plate = $("#plate");
+        plate.hidden = false;
+        plate.innerHTML = `<div class="row"><button type="button" id="plateRetry">Edit and try again</button></div>`;
+        $("#plateRetry").addEventListener("click", () => { reset(); $("#prompt").focus(); });
+      }
+      break;
+    }
   }
 }
 
@@ -871,7 +906,7 @@ function onVerdict(ev) {
         ${v.amendments?.length ? `<div class="v-sec v-wide"><h3>Amendments</h3><ul>${v.amendments.map((a) => `<li><b>${esc(seatName(a.seat))}:</b> ${esc(a.amendment)} <span class="tag">${a.adopted ? "Adopted" : "Not adopted"}: ${esc(a.reason)}</span></li>`).join("")}</ul></div>` : ""}
       </div>
     </details>
-    <div class="v-foot"><span class="muted">${esc(v.disclaimer)}</span><button class="ghost" data-close>Back to the table</button></div>`;
+    <div class="v-foot"><span></span><button class="ghost" data-close>Back to the table</button></div>`;
   $("#verdictBody").innerHTML = html;
   const plate = $("#plate");
   plate.hidden = false;
@@ -1013,7 +1048,7 @@ async function savePdf(btn) {
     await downloadVerdictPdf({ setup, verdict, byKey: state.byKey, id: id || state.session });
   } catch (e) {
     console.error(e);
-    toast("Couldn't make the PDF: " + (e.message || e));
+    toast("Couldn't make the PDF. " + (/no verdict/.test(e.message || "") ? e.message : "Try again, or open the verdict on a computer."));
   } finally {
     btn.disabled = false;
     btn.classList.remove("busy");
@@ -1022,6 +1057,24 @@ async function savePdf(btn) {
 }
 
 // ------------------------------------------------------------- misc
+// Turn raw gateway and network errors into a sentence a person can act on.
+let lastSeatError = "";
+function friendlyError(raw) {
+  const m = String(raw || "");
+  if (/credit card|add-credit-card|billing|payment|\b402\b|insufficient (funds|credit)|quota/i.test(m))
+    return "The AI service behind the room isn't switched on yet (its account needs billing set up). Your question is fine; please try again later.";
+  if (/\b(401|403)\b|unauthori[sz]ed|forbidden|credentials|api key|AI_GATEWAY/i.test(m))
+    return "The room can't sign in to its AI service right now. Your question is fine; please try again later.";
+  if (/\b429\b|rate.?limit|too many requests/i.test(m))
+    return "The AI service is busy right now. Wait a minute, then try again.";
+  if (/failed to fetch|networkerror|network error|load failed|timed? ?out|timeout|ECONN|offline/i.test(m))
+    return "Couldn't reach the council. Check your connection and try again.";
+  if (/\b5\d\d\b|bad gateway|unavailable|overloaded/i.test(m))
+    return "The AI service had a hiccup. Try again in a moment.";
+  const clean = m.replace(/^AI Gateway \d+:\s*/i, "").replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim();
+  return clean ? (clean.length > 160 ? clean.slice(0, 157) + "..." : clean) : "Something went wrong. Try again.";
+}
+
 let toastTimer;
 function toast(msg) {
   const t = $("#toast");
