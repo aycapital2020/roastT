@@ -52,7 +52,14 @@ Your choice is remembered in the browser. `"board"` in `council/roster.json` set
 
 ## Watch an example first
 
-Click **Past sessions**. Three finished councils ship with the repo, so you can replay them and download their PDFs without making a single model call.
+Open **Examples** at the bottom of the Chats sidebar. Three finished councils ship with the repo, so you can replay them and download their PDFs without making a single model call.
+
+## Chats sidebar
+
+The sidebar on the left works like a chat app: **New chat** gives you a fresh question box, and every council you run is listed under Today, Yesterday, Previous 7 days, or Older. Click one to replay it with its verdict, or use its buttons to download the PDF, rename it, or delete it.
+
+- The lock in the sidebar header pins it open. Unlock it and it folds into a slim rail that slides out when you hover or click, then tucks away after you pick something. Your choice is remembered.
+- On a phone, the menu button at the top opens it as a drawer. Tap outside or swipe it left to close it.
 
 ## Listen to the council
 
@@ -61,7 +68,7 @@ Press **Listen** at the top and every advisor reads their lines aloud as the deb
 - Lines are queued, so two advisors never talk over each other, and the playback speed also speeds up the voices.
 - **Mute** silences the room without turning Listen off. **Skip speaker** moves on to the next line. **Skip ahead** jumps to the end.
 - The speaker button on any line in Key points plays just that turn, even with Listen off.
-- Your Listen choice is remembered in this browser. Browsers only allow sound after a click, so the voices start once you press Convene or pick a past council.
+- Your Listen choice is remembered in this browser. Browsers only allow sound after a click, so the voices start once you press Convene or open a chat from the sidebar.
 
 ## How it works
 
@@ -69,7 +76,7 @@ Press **Listen** at the top and every advisor reads their lines aloud as the deb
 - **Each seat** gets a system prompt built from its brain (`council/brains/<name>/`: frameworks, principles, positions, stories, and voice notes compiled from public sources, every quote tied to a source) and its persona (`council/agents/council-<name>.md`). Quotes a seat makes are checked against the brain on the server and marked verified or not.
 - **The Chair** uses structured output (JSON schema) for the setup, the cruxes, the draft, and the verdict, so the page always gets clean data. The full protocol it follows is in `council/CHAIR.md`.
 - **Each seat scores every option**, weighted by how much that seat's pillar matters to your decision. The verdict is capped when a seat flags ruin risk, and the Chair forces a real argument when everyone agrees too fast.
-- **Sessions are saved in your browser** (localStorage, last 25 councils). Past sessions lists them next to the shipped examples, replays any of them, and downloads the PDF. Nothing about your question is stored on the server.
+- **Sessions are saved in your browser** (localStorage, the last 100 councils). The Chats sidebar lists them by date next to the shipped examples, replays any of them, and downloads the PDF. Nothing about your question is stored on the server.
 
 ## Deploy to Vercel
 

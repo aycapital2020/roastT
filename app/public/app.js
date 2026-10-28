@@ -1,5 +1,6 @@
 import { downloadVerdictPdf } from "./pdf.js";
-import { runCouncil, usage, listLocal, loadLocal, saveLocal } from "./runner.js";
+import { runCouncil, usage, loadLocal, saveLocal } from "./runner.js";
+import { initSidebar, refreshSidebar } from "./sidebar.js";
 import { setRoster } from "./engine.js";
 import { voice } from "./voice.js";
 
@@ -54,7 +55,7 @@ const GUIDE = `
         <li><span><b>Quick:</b> 4 advisors and 2 rounds. Faster and cheaper.</span></li>
         <li><span><b>Who sits:</b> let the Chair pick the advisors that fit your question, seat your default board, or choose them yourself.</span></li>
         <li><span><b>Listen:</b> turn it on at the top and each advisor reads their lines aloud in their own voice, with the Chair in another. It uses your browser's built-in voices. Press the speaker on any line to hear just that turn.</span></li>
-        <li><span><b>Saved in this browser.</b> Open Past sessions to replay a council or download its PDF. Clearing site data removes them.</span></li>
+        <li><span><b>Saved in this browser.</b> Every council you run is listed in the Chats sidebar on the left: open one to replay it, download its PDF, rename it, or delete it. Clearing site data removes them.</span></li>
         <li><span><b>Powered by xAI Grok</b> through Vercel AI Gateway: one model call per seat per round, plus the Chair.</span></li>
       </ul>
     </div>
@@ -109,6 +110,14 @@ async function boot() {
   renderSamples();
   renderPicker();
   bindUI();
+  initSidebar({
+    onNew: newChat,
+    onOpen: replay,
+    getActive: () => state.session,
+    getRunning: () => state.runningRec || null,
+    onDeleted: (id) => { if (state.session === id && state.running !== id) reset(); },
+    toast,
+  });
   new ResizeObserver(() => { layoutStage(); drawLinks(); }).observe($("#stage"));
   startBlinking();
   reset();
@@ -291,7 +300,6 @@ function bindUI() {
     if (say) { e.stopPropagation(); playTurn(say); return; }
     const c = e.target.closest(".feed-card"); if (c) openCard(c.dataset.seat, Number(c.dataset.round));
   });
-  $("#waitHistory").addEventListener("click", openHistory);
   $("#waitGuide").addEventListener("click", openGuide);
   $("#guideBtn").addEventListener("click", openGuide);
   document.addEventListener("click", async (e) => {
@@ -304,11 +312,9 @@ function bindUI() {
     }
     if (e.target.closest("[data-pdf]")) savePdf(e.target.closest("[data-pdf]"));
   });
-  $("#historyBtn").addEventListener("click", openHistory);
-  $("#newBtn").addEventListener("click", reset);
   $("#verdictSheet").addEventListener("click", (e) => { if (e.target.id === "verdictSheet" || e.target.closest("[data-close]")) $("#verdictSheet").hidden = true; });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("#verdictSheet").hidden = true; });
-  // Clicking the dimmed backdrop around a card, the guide, or past sessions closes it (Escape already does).
+  // Clicking the dimmed backdrop around a card, or the guide closes it (Escape already does).
   // Both press and release must land outside the box, so a text selection dragged out of it never closes it.
   $$("dialog.card-dialog").forEach((d) => {
     const outside = (e) => {
@@ -402,7 +408,6 @@ function reset() {
   $("#cruxes").hidden = true;
   $("#plate").hidden = true;
   $("#playbar").hidden = true;
-  $("#newBtn").hidden = true;
   $("#verdictSheet").hidden = true;
   $("#panelHead").textContent = "Getting started";
   $("#feed").innerHTML = GUIDE;
@@ -413,6 +418,14 @@ function reset() {
   $("#spot").classList.remove("on");
   $$(".stepper li").forEach((li) => li.classList.remove("active", "done"));
   drawLinks();
+  refreshSidebar();
+}
+
+// The sidebar's New chat: back to an empty question box, ready to type.
+function newChat() {
+  reset();
+  $("#prompt").focus({ preventScroll: true });
+  window.scrollTo({ top: 0 });
 }
 
 function begin(id) {
@@ -420,12 +433,12 @@ function begin(id) {
   state.session = id;
   $("#composer").hidden = true;
   $("#waiting").hidden = true;
-  $("#newBtn").hidden = false;
   $("#playbar").hidden = false;
   $("#panelHead").textContent = "Key points";
   $("#feed").innerHTML = '<div class="empty">One line per seat as the council talks. Click a seat to read its full card.</div>';
   $("#stage").classList.add("live");
   chairSays("The council is taking their seats", { dots: true });
+  refreshSidebar();
 }
 
 // Run a council here in the browser: each step is one short call to /api/chair or /api/seat.
@@ -434,11 +447,12 @@ async function convene(prompt, mode, table) {
   begin(id);
   const rec = { id, prompt, mode, status: "running", title: "", events: [], started: Date.now() };
   const ctl = new AbortController();
-  Object.assign(state, { running: id, abort: ctl });
+  Object.assign(state, { running: id, abort: ctl, runningRec: rec });
   $("#convene").disabled = true;
+  refreshSidebar();
   const save = () => { if (!saveLocal(rec)) toast("This browser is out of space, so this council was not saved."); };
   const emit = (ev) => {
-    if (ev.type === "setup") rec.title = ev.title;
+    if (ev.type === "setup") { rec.title = ev.title; refreshSidebar(); }
     if (ev.type !== "seat_error") rec.events.push(ev);
     if (state.session !== id) return; // the user left this council; keep recording it
     if (ev.type === "seat_error") return toast(`${state.byKey[ev.seat]?.short || ev.seat} could not answer: ${ev.error}`);
@@ -454,8 +468,10 @@ async function convene(prompt, mode, table) {
     if (!ctl.signal.aborted) emit({ type: "error", t: Date.now() - rec.started, error: String(e.message || e) });
   } finally {
     if (state.running === id) Object.assign(state, { running: null, abort: null });
+    if (state.runningRec === rec) state.runningRec = null;
     $("#convene").disabled = false;
     if (rec.events.length > 1) save();
+    refreshSidebar();
     refreshUsage();
   }
 }
@@ -872,27 +888,14 @@ function onVerdict(ev) {
   setTimeout(() => { if (state.verdict === ev) $("#verdictSheet").hidden = false; }, 1600);
 }
 
-// ------------------------------------------------------------- history + replay
-async function allSessions() {
-  const ex = await fetch("/data/examples.json").then((x) => x.json()).catch(() => ({ sessions: [] }));
-  return [...listLocal(), ...ex.sessions];
-}
-
+// ------------------------------------------------------------- replay (opened from the sidebar)
 async function loadSession(id) {
   const mine = loadLocal(id);
   if (mine) return mine;
+  if (state.runningRec?.id === id) return state.runningRec;
   const r = await fetch(`/data/sessions/${encodeURIComponent(id)}.json`);
   if (!r.ok) throw new Error("That session is not available.");
   return r.json();
-}
-
-async function openHistory() {
-  const sessions = await allSessions();
-  $("#historyList").innerHTML = sessions.length
-    ? sessions.map((s) => `<li><button data-id="${esc(s.id)}"><b>${esc(s.title)}</b><small>${esc(s.example ? "example" : s.id.slice(0, 10))} · ${esc(s.mode)} · ${esc(s.status)}</small></button>${s.status === "done" ? `<button class="pdf" type="button" data-pdf="${esc(s.id)}" title="Download the verdict as a PDF">PDF</button>` : ""}</li>`).join("")
-    : '<li class="muted">No sessions yet. Convene the council once and it shows up here.</li>';
-  $$("#historyList button[data-id]").forEach((b) => b.addEventListener("click", () => { $("#historyDialog").close(); replay(b.dataset.id); }));
-  $("#historyDialog").showModal();
 }
 
 async function replay(id) {
@@ -996,11 +999,12 @@ function openGuide() {
 async function savePdf(btn) {
   const id = btn.dataset.pdf;
   btn.disabled = true;
-  const old = btn.textContent;
-  btn.textContent = "Making PDF...";
+  const icon = btn.classList.contains("sb-act"); // the sidebar's small download icon keeps its glyph
+  const old = btn.innerHTML;
+  if (icon) btn.classList.add("busy"); else btn.textContent = "Making PDF...";
   try {
     let setup = state.setup, verdict = state.verdict;
-    if (id) { // a past session from the history list
+    if (id) { // a past council from the sidebar
       const j = await loadSession(id);
       setup = j.events.find((e) => e.type === "setup");
       verdict = [...j.events].reverse().find((e) => e.type === "verdict");
@@ -1012,7 +1016,8 @@ async function savePdf(btn) {
     toast("Couldn't make the PDF: " + (e.message || e));
   } finally {
     btn.disabled = false;
-    btn.textContent = old;
+    btn.classList.remove("busy");
+    if (!icon) btn.innerHTML = old;
   }
 }
 

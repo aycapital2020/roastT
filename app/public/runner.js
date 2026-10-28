@@ -127,12 +127,42 @@ export async function runCouncil({ prompt, mode, table, emit, byKey, signal }) {
 }
 
 // ---------------------------------------------------------------- saved sessions (this browser)
+// The sidebar lists these. Index entries: { id, title, name?, prompt, mode, status, created }.
+// `name` is a title the user typed (rename); `created` is ms since epoch, for the date groups.
 const INDEX = "roastroom:sessions";
 const KEY = (id) => `roastroom:s:${id}`;
-const MAX_SAVED = 25;
+const VERSION_KEY = "roastroom:sessions:v";
+export const MAX_SAVED = 100;
+
+// ids look like 2026-10-28-<Date.now() in base 36>; older ones may only carry the date
+export function createdFromId(id) {
+  const m = String(id).match(/^(\d{4}-\d{2}-\d{2})(?:-([0-9a-z]+))?/);
+  if (!m) return 0;
+  const t = m[2] ? parseInt(m[2], 36) : NaN;
+  if (Number.isFinite(t) && t > 1.5e12 && t < 4e12) return t;
+  return new Date(`${m[1]}T12:00:00`).getTime() || 0;
+}
 
 export function listLocal() {
-  try { return JSON.parse(localStorage.getItem(INDEX) || "[]"); } catch { return []; }
+  let list;
+  try { list = JSON.parse(localStorage.getItem(INDEX) || "[]"); } catch { list = []; }
+  if (!Array.isArray(list)) return [];
+  return list.filter((x) => x && x.id).map((x) => ({ ...x, created: x.created || createdFromId(x.id) }));
+}
+
+function writeIndex(list) { localStorage.setItem(INDEX, JSON.stringify(list)); }
+
+/** One-time upgrade of councils saved by the old "Past sessions" list (last 25, no dates). */
+export function migrateLocal() {
+  try {
+    if (localStorage.getItem(VERSION_KEY) === "2") return;
+    const list = listLocal()
+      .map((x) => ({ ...x, created: x.created || loadLocal(x.id)?.started || createdFromId(x.id) }))
+      .filter((x) => localStorage.getItem(KEY(x.id)) !== null) // drop index rows whose council is gone
+      .sort((a, b) => b.created - a.created);
+    writeIndex(list.slice(0, MAX_SAVED));
+    localStorage.setItem(VERSION_KEY, "2");
+  } catch { /* storage unavailable: nothing to migrate */ }
 }
 
 export function loadLocal(id) {
@@ -140,13 +170,15 @@ export function loadLocal(id) {
 }
 
 export function saveLocal(s) {
-  const meta = { id: s.id, title: s.title || s.prompt.slice(0, 60), prompt: s.prompt, mode: s.mode, status: s.status };
+  const old = listLocal().find((x) => x.id === s.id);
+  const meta = { id: s.id, title: s.title || s.prompt.slice(0, 60), prompt: s.prompt, mode: s.mode, status: s.status, created: old?.created || s.started || createdFromId(s.id) };
+  if (old?.name) meta.name = old.name;
   let list = [meta, ...listLocal().filter((x) => x.id !== s.id)];
   while (list.length > MAX_SAVED) localStorage.removeItem(KEY(list.pop().id));
   for (;;) {
     try {
       localStorage.setItem(KEY(s.id), JSON.stringify(s));
-      localStorage.setItem(INDEX, JSON.stringify(list));
+      writeIndex(list);
       return true;
     } catch {
       // storage full: drop the oldest saved council and try again
@@ -156,7 +188,18 @@ export function saveLocal(s) {
   }
 }
 
+/** Give a saved council a title of your own. An empty name goes back to the Chair's title. */
+export function renameLocal(id, name) {
+  const clean = String(name || "").replace(/\s+/g, " ").trim().slice(0, 120);
+  const list = listLocal().map((x) => {
+    if (x.id !== id) return x;
+    const { name: _old, ...rest } = x;
+    return clean && clean !== x.title ? { ...rest, name: clean } : rest;
+  });
+  try { writeIndex(list); return true; } catch { return false; }
+}
+
 export function deleteLocal(id) {
   localStorage.removeItem(KEY(id));
-  localStorage.setItem(INDEX, JSON.stringify(listLocal().filter((x) => x.id !== id)));
+  writeIndex(listLocal().filter((x) => x.id !== id));
 }
