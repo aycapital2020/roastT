@@ -2,7 +2,8 @@ import { downloadVerdictPdf } from "./pdf.js";
 import { runCouncil, usage, loadLocal, saveLocal } from "./runner.js";
 import { initSidebar, refreshSidebar } from "./sidebar.js";
 import { setRoster } from "./engine.js";
-import { voice } from "./voice.js";
+import { voice, normText } from "./voice.js";
+import { cc } from "./captions.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -54,6 +55,7 @@ const GUIDE = `
         <li><span><b>Full council:</b> 5 to 7 advisors, 3 rounds. For big calls that are hard to undo. A few minutes.</span></li>
         <li><span><b>Quick:</b> 4 advisors and 2 rounds. Faster and cheaper.</span></li>
         <li><span><b>Who sits:</b> let the Chair pick the advisors that fit your question, seat your default board, or choose them yourself.</span></li>
+        <li><span><b>Captions (CC):</b> on by default. The line being said shows across the table like subtitles, with who is talking. With Listen on they follow the voice; with it off they follow the playback speed. Press <b>CC</b> at the top to hide them.</span></li>
         <li><span><b>Listen:</b> turn it on at the top and each advisor reads their lines aloud in their own voice, with the Chair in another. It uses your browser's built-in voices. Press the speaker on any line to hear just that turn.</span></li>
         <li><span><b>Saved in this browser.</b> Every council you run is listed in the Chats sidebar on the left: open one to replay it, download its PDF, rename it, or delete it. Clearing site data removes them.</span></li>
         <li><span><b>Powered by xAI Grok</b> through Vercel AI Gateway: one model call per seat per round, plus the Chair.</span></li>
@@ -106,6 +108,7 @@ const state = {
 async function boot() {
   await refreshSeats();
   voice.init(state.seats.map((s) => s.key));
+  cc.init($("#cc"));
   renderSeats(state.board);
   renderSamples();
   renderPicker();
@@ -353,7 +356,9 @@ function bindUI() {
   $("#skipLineBtn").addEventListener("click", () => player.skipLine());
   $("#listenBtn").addEventListener("click", () => { voice.setOn(!voice.on); syncListen(); toast(voice.on ? "Listen is on. Each advisor reads their lines aloud." : "Listen is off."); });
   $("#muteBtn").addEventListener("click", () => { voice.muted = !voice.muted; if (voice.muted) voice.stop(); syncListen(); });
+  $("#ccBtn").addEventListener("click", () => { cc.setOn(!cc.on); syncCC(); toast(cc.on ? "Captions are on. The line being said shows across the table." : "Captions are off."); });
   syncListen();
+  syncCC();
 }
 
 // ------------------------------------------------------------- listening
@@ -369,13 +374,41 @@ function syncListen() {
   m.setAttribute("aria-pressed", String(voice.muted));
 }
 
+function syncCC() {
+  const b = $("#ccBtn");
+  b.setAttribute("aria-pressed", String(cc.on));
+  b.title = cc.on ? "Hide captions" : "Show captions of what is being said";
+  b.setAttribute("aria-label", cc.on ? "Captions on" : "Captions off");
+}
+
+/** Show a caption for a seat (or the Chair, key null). Returns the caption's id. */
+function ccLine(key, text) {
+  const s = key && state.byKey[key];
+  return cc.line(s ? { name: s.short, img: portrait(key) } : { name: "Chair", img: "/brand/ais-symbol.png", chair: true }, text);
+}
+
+/** Caption a line and say it aloud if Listen is on. Resolves when it has been said, or read at the playback pace. */
+function narrate(key, capText, sayText = capText) {
+  const seq = ccLine(key, capText);
+  if (sayText && voice.active && !player.fast && normText(sayText) === normText(capText)) {
+    return voice.say(key, sayText, { hooks: cc.hooks(seq) }).then(() => cc.finish(seq));
+  }
+  const said = sayText && !player.fast ? voice.say(key, sayText) : Promise.resolve();
+  player.lineSkip = false;
+  const sleep = (ms) => (player.lineSkip ? Promise.resolve() : player.sleep(ms)); // Skip speaker ends this caption too
+  return Promise.all([said, cc.pace(sleep, seq)]).then(() => cc.finish(seq));
+}
+
 /** A "play this turn" button: reads that one line now, even with Listen off. */
 function playTurn(btn) {
   const key = btn.dataset.say || null;
   const text = btn.dataset.text || "";
   $$("[data-say].playing").forEach((x) => x.classList.remove("playing"));
   btn.classList.add("playing");
-  voice.playNow(key, text).then(() => btn.classList.remove("playing"));
+  const seq = ccLine(key, text);
+  const done = () => { btn.classList.remove("playing"); cc.finish(seq); };
+  if (voice.supported) voice.playNow(key, text, { hooks: cc.hooks(seq) }).then(done);
+  else cc.pace((ms) => new Promise((r) => setTimeout(r, ms / player.speed)), seq).then(done);
 }
 const sayBtn = (key, text) => `<button type="button" class="say" data-say="${esc(key || "")}" data-text="${esc(text)}" title="Play this turn" aria-label="Play this turn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6h2.5L9 3v10L5.5 10H3z" fill="currentColor"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.6 3.8a6 6 0 0 1 0 8.4" stroke="currentColor" fill="none" stroke-width="1.3" stroke-linecap="round"/></svg></button>`;
 
@@ -419,6 +452,7 @@ function reset() {
   player.reset(); // a council still running keeps going in the background and is saved when it ends
   Object.assign(state, { session: null, options: [], weights: {}, active: [], round: 0, cards: { 1: {}, 2: {}, 3: {} }, replaying: false, verdict: null, links: [], speaking: null, setup: null, wait: null });
   hideWait();
+  cc.hide();
   $("#stage").classList.remove("live");
   $("#topic").hidden = true;
   $("#composer").hidden = false;
@@ -536,7 +570,7 @@ async function handle(ev) {
       // a failed round only says how many seats answered; the seats' own errors say why
       const why = friendlyError(/^Round \d+ failed/.test(ev.error || "") && lastSeatError ? lastSeatError : ev.error);
       toast("The council stopped before its verdict.");
-      chairSays(`The council stopped. ${why}`, { say: "The council stopped before its verdict." });
+      chairSays(`The council stopped. ${why}`, { say: "The council stopped before its verdict.", cap: `The council stopped. ${why}` });
       $("#playbar").hidden = true;
       if (!state.replaying) {
         const plate = $("#plate");
@@ -653,7 +687,7 @@ function captionFor(who) {
 }
 
 /** The Chair's caption. Returns a promise that resolves when the Chair has said it aloud (if Listen is on). */
-function chairSays(text, { dots = false, tag = "", say = text } = {}) {
+function chairSays(text, { dots = false, tag = "", say = text, cap = say || text } = {}) {
   setSpeaker(null);
   captionFor(null);
   $("#capTag").textContent = tag;
@@ -661,10 +695,11 @@ function chairSays(text, { dots = false, tag = "", say = text } = {}) {
   p.className = "cap-text chair";
   p.innerHTML = esc(text) + (dots ? '<span class="dots"><i></i><i></i><i></i></span>' : "");
   $("#capSub").textContent = "";
-  return say ? voice.say(null, say) : Promise.resolve();
+  return narrate(null, cap, say);
 }
 
 async function speak(key, text, { tag = "", target = null, sub = "" } = {}) {
+  text = normText(text);
   setSpeaker(key, target);
   captionFor(key);
   $("#capTag").textContent = tag;
@@ -675,11 +710,14 @@ async function speak(key, text, { tag = "", target = null, sub = "" } = {}) {
   p.innerHTML = words.map((w) => `<span class="w">${esc(w)}</span> `).join("");
   const spans = $$(".w", p);
   player.lineSkip = false;
-  const said = player.fast ? Promise.resolve() : voice.say(key, text); // spoken in step with the words
-  for (let i = 0; i < words.length; i++) {
+  const seq = ccLine(key, text);
+  const voiced = !player.fast && voice.active; // captions follow the voice; otherwise the words below
+  const said = voiced ? voice.say(key, text, { hooks: cc.hooks(seq) }) : Promise.resolve(); // spoken in step with the words
+  for (let i = 0, at = 0; i < words.length; at += words[i].length + 1, i++) {
     if (player.fast || player.lineSkip) break;
     const w = words[i];
     spans[i].classList.add("on");
+    if (!voiced) cc.progress(at, seq);
     const shapes = shapesFor(w.replace(/[^a-z]/gi, ""));
     const dur = Math.max(170, w.length * 52);
     const per = dur / (shapes.length + 1);
@@ -690,7 +728,9 @@ async function speak(key, text, { tag = "", target = null, sub = "" } = {}) {
   spans.forEach((s) => s.classList.add("on"));
   setShape(key, "base");
   $("#capSub").innerHTML = sub;
+  if (!voiced) cc.finish(seq);
   await said; // the voice can run longer than the words on screen; wait so speakers never overlap
+  cc.finish(seq);
   if (player.lineSkip) { player.lineSkip = false; await player.sleep(250); return; }
   await player.sleep(1300);
 }
@@ -782,7 +822,7 @@ async function onCruxes(ev) {
   const line = (ev.unanimous ? "Too much agreement. The Chair pushes back. " : "Here is what they're fighting about. ") + fight;
   f.innerHTML = `<b>The fight:</b> ${ev.cruxes.map((x) => esc(x.question)).join(" ")}${sayBtn(null, line)}`;
   feedAppend(f);
-  await Promise.all([player.sleep(3500 + 1800 * ev.cruxes.length), voice.say(null, line)]);
+  await Promise.all([player.sleep(3500 + 1800 * ev.cruxes.length), narrate(null, line)]);
 }
 
 async function onDraft(d) {
@@ -919,7 +959,8 @@ function onVerdict(ev) {
   const spoken = `The council's verdict: ${v.label}. ${firstSentences(clean(v.call), 320)}`;
   f.innerHTML = `<b>Verdict: ${esc(v.label)}.</b> ${esc(firstSentences(clean(v.call), 160))}${sayBtn(null, spoken)}`;
   feedAppend(f);
-  voice.say(null, spoken);
+  const done = narrate(null, spoken), vseq = cc.seq;
+  done.then(() => cc.hideLater(vseq, 8000));
   setTimeout(() => { if (state.verdict === ev) $("#verdictSheet").hidden = false; }, 1600);
 }
 
@@ -981,6 +1022,7 @@ function tickWait() {
   if (card.hidden) {
     state.capWasShown = !$("#caption").hidden;
     $("#caption").hidden = true;
+    cc.hide(); // the wait card says what is happening; the next line brings the captions back
     $("#cruxes").hidden = true;
     // speed controls do nothing while the room waits, and they would cover the card
     state.playbarWasShown = !$("#playbar").hidden;

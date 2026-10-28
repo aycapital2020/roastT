@@ -51,6 +51,7 @@
     <div class="top-actions">
       <span class="usage" id="usage" title="Tokens used by this app since it started"></span>
       <button class="ghost listen" id="listenBtn" type="button" aria-pressed="false" title="Hear each advisor read their lines aloud">Listen: off</button>
+      <button class="ghost cc-btn" id="ccBtn" type="button" aria-pressed="true" title="Hide captions">CC</button>
       <button class="ghost" id="guideBtn" type="button">How it works</button>
       <button class="sb-icon sb-mnew" type="button" aria-label="New chat" title="New chat" data-new-chat><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
     </div>
@@ -122,6 +123,12 @@
           <div class="plate" id="plate" hidden></div>
         </div>
 
+        <div class="dock">
+        <div class="cc" id="cc" role="region" aria-label="Live captions" hidden>
+          <div class="cc-prev" aria-hidden="true"></div>
+          <p class="cc-cur"></p>
+        </div>
+
         <div class="playbar" id="playbar" role="group" aria-label="Playback" hidden>
           <span class="queue" id="queueInfo"></span>
           <div class="speed" role="radiogroup" aria-label="Playback speed">
@@ -132,6 +139,7 @@
           <button type="button" class="skip" id="muteBtn" aria-pressed="false" hidden>Mute</button>
           <button type="button" class="skip" id="skipLineBtn" title="Skip the advisor speaking now">Skip speaker</button>
           <button type="button" class="skip" id="skipBtn">Skip ahead</button>
+        </div>
         </div>
       </div>
     </section>

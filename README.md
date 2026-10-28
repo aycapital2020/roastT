@@ -70,6 +70,15 @@ Press **Listen** at the top and every advisor reads their lines aloud as the deb
 - The speaker button on any line in Key points plays just that turn, even with Listen off.
 - Your Listen choice is remembered in this browser. Browsers only allow sound after a click, so the voices start once you press Convene or open a chat from the sidebar.
 
+## Captions
+
+Captions are on by default: the line being said runs across the table like subtitles on a video, with the speaker's name and portrait, so you can follow what the council is discussing without sound. They cover every line, the Chair's included (the setup, each round, the fault lines, the draft, and the verdict), live or in a replayed chat or example.
+
+- With **Listen** on, the words light up in step with the voice: word by word where the browser reports word timings, otherwise estimated from each spoken piece.
+- With Listen off, the captions follow the playback, so 1x / 1.6x / 2.5x, **Skip speaker**, and **Skip ahead** apply to them too.
+- On a phone they sit just above the playback bar at the bottom of the screen, two or three lines at a time.
+- Press **CC** at the top to hide or show them. The choice is remembered in this browser.
+
 ## How it works
 
 - **The browser runs the council.** A full council is a few dozen short calls, so instead of one long server job the page orchestrates it: one call to the Chair for setup, one per seat per round, one each for cruxes, the draft, and the verdict. Every call is its own small function request (`/api/chair`, `/api/seat`), so nothing hits a function time limit, and a failed call is retried on its own.

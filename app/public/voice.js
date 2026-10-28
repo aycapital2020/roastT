@@ -19,6 +19,9 @@ const CHAIR_PROFILE = [0.9, 0.95];
 const FEMALE_NAMES = /female|woman|samantha|victoria|karen|moira|tessa|fiona|zira|aria|jenny|hazel|susan|libby|sonia|natasha|heera|kalpana|veena|neerja|ava|allison|serena|kate|catherine|emma|joanna|salli|kimberly|ivy|michelle|clara|nicky|zoe|amy|olivia|emily|swara|lekha|isha/i;
 const MALE_NAMES = /\bmale\b|man\b|david|mark|george|daniel|alex\b|fred|guy|ryan|rishi|ravi|prabhat|thomas|james|oliver|arthur|aaron|tom\b|eric|christopher|roger|steffan|brian|matthew|joey|justin|liam|william|hemant|madhur|prabhat|reed|rocko|grandpa|eddy/i;
 
+/** The text as spoken: one space between words. Captions use the same string, so char offsets line up. */
+export const normText = (t) => String(t ?? "").replace(/\s+/g, " ").trim();
+
 const hash = (s) => { let h = 2166136261; for (const c of String(s)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 const kindOf = (v) => (FEMALE_NAMES.test(v.name) && !/\bmale\b/i.test(v.name) ? "f" : MALE_NAMES.test(v.name) ? "m" : "?");
 
@@ -97,21 +100,27 @@ export const voice = {
     return p;
   },
 
-  /** Queue a line. Resolves when it has been spoken, skipped, or stopped. Lines never overlap. */
-  say(key, text, { force = false } = {}) {
+  /** Queue a line. Resolves when it has been spoken, skipped, or stopped. Lines never overlap.
+   *  hooks (for live captions): chunk(offset, length, rate) as each piece starts, boundary(offset) per word
+   *  where the engine reports it; offsets index into normText(text). */
+  say(key, text, { force = false, hooks = null } = {}) {
     if (!text || !this.supported || !this.unlocked || (!force && !this.active)) return Promise.resolve();
     const epoch = this.epoch;
-    const run = () => (epoch === this.epoch && (force || this.active) ? this.speakNow(key, text) : undefined);
+    const run = () => (epoch === this.epoch && (force || this.active) ? this.speakNow(key, text, hooks) : undefined);
     const p = this.tail.then(run, run);
     this.tail = p;
     return p;
   },
   epoch: 0,
   tail: Promise.resolve(),
-  speakNow(key, text) {
+  speakNow(key, text, hooks = null) {
     const { voice: v, pitch, rate } = this.profile(key);
     // short chunks: Chrome cuts off long utterances and ignores pitch on network voices
-    const chunks = String(text).replace(/\s+/g, " ").match(/[^.!?;]{1,220}[.!?;]*["”)]?\s*|.{1,220}/g)?.map((c) => c.trim()).filter(Boolean) || [];
+    const all = normText(text);
+    const chunks = all.match(/[^.!?;]{1,220}[.!?;]*["”)]?\s*|.{1,220}/g)?.map((c) => c.trim()).filter(Boolean) || [];
+    let from = 0;
+    const offs = chunks.map((c) => { const at = all.indexOf(c, from); const o = at < 0 ? from : at; from = o + c.length; return o; });
+    const call = (name, ...a) => { try { hooks?.[name]?.(...a); } catch {} };
     return new Promise((resolve) => {
       let done = false, i = 0, guard;
       const me = { key, cancel: () => { finish(); try { synth.cancel(); } catch {} } };
@@ -121,22 +130,27 @@ export const voice = {
         clearTimeout(guard);
         if (done) return;
         if (i >= chunks.length) return finish();
+        const off = offs[i];
         const c = chunks[i++];
         const u = new SpeechSynthesisUtterance(c);
         if (v) { u.voice = v; u.lang = v.lang; }
         u.pitch = pitch;
         u.rate = Math.min(2, rate * this.rate);
+        // captions: where this piece starts, then word by word where the engine says so
+        u.onstart = () => call("chunk", off, c.length, u.rate);
+        u.onboundary = (e) => { if (!e || e.name === undefined || e.name === "word") call("boundary", off + (e?.charIndex || 0)); };
         u.onend = next;
         u.onerror = next;
         // some engines never fire onend; don't let the room hang on them
         guard = setTimeout(next, 4000 + (c.length * 110) / u.rate);
+        call("chunk", off, c.length, u.rate); // engines that never fire onstart still move the captions
         try { synth.speak(u); } catch { finish(); }
       };
       next();
     });
   },
   /** "Play this turn": interrupts whatever is playing, works even with Listen off. */
-  playNow(key, text) { this.stop(); return this.say(key, text, { force: true }); },
+  playNow(key, text, opts = {}) { this.stop(); return this.say(key, text, { ...opts, force: true }); },
   cancelCurrent() { const c = this.cur; this.cur = null; if (c) c.cancel(); },
   /** Skip the current speaker; the next queued line starts. */
   skip() { this.cancelCurrent(); },
