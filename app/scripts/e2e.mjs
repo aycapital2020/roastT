@@ -28,7 +28,7 @@ console.log("config", config);
 const byKey = Object.fromEntries((roster?.seats || []).map((s) => [s.key, s]));
 const all = Object.keys(byKey);
 
-const prompt = "I run a coaching business doing $30k a month with 15 clients at $2,000 each. Should I raise to $3,500 for everyone, raise for new clients only, or keep $2,000? Close rate is about 50% and I have $40k in the bank.";
+const prompt = process.env.PROMPT || "I run a coaching business doing $30k a month with 15 clients at $2,000 each. Should I raise to $3,500 for everyone, raise for new clients only, or keep $2,000? Close rate is about 50% and I have $40k in the bank.";
 const cases = live ? [["quick", { pick: true, board: all }]] : [
   ["full", { pick: true, board: all }],
   ["quick", { pick: false, board: roster.board.default }],
@@ -44,7 +44,7 @@ for (const [mode, table] of cases) {
     const v = st.verdict;
     const ok = v && v.label && st.seats.length >= 3 && seen.includes("verdict") && !errors.length;
     console.log(`${ok ? "PASS" : "FAIL"} ${mode} pick=${table.pick} seats=${st.seats.join(",")} rounds=${st.rounds.join("")} -> ${v.label} on ${v.recommended} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
-    if (live) console.log("verdict call:", v.call);
+    if (live) console.log(JSON.stringify({ label: v.label, recommended: v.recommended, call: v.call, options: st.options, why: (v.why || []).map((w) => w.point), conditions: v.conditions, kill: v.kill_criteria }, null, 1));
     if (errors.length) console.log("  seat errors:", errors);
     if (!ok) failed++;
   } catch (e) {
