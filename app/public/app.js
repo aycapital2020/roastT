@@ -1,4 +1,6 @@
 import { downloadVerdictPdf } from "./pdf.js";
+import { runCouncil, usage, listLocal, loadLocal, saveLocal } from "./runner.js";
+import { setRoster } from "./engine.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -19,9 +21,9 @@ const GUIDE = `
     <div class="guide-sec">
       <h4>How to use the Roast Room</h4>
       <ol>
-        <li><span>Open Claude Code in this folder.</span></li>
-        <li><span>Type <code>/roast-room</code> and your decision.</span></li>
-        <li><span>Pick your advisors (the Chair recommends a board) and answer its questions. Then watch the council argue it out here.</span></li>
+        <li><span>Type your decision in the box in the middle of the table.</span></li>
+        <li><span>Pick a full council or a quick one, and who sits: the Chair's pick, your default board, or seats you choose.</span></li>
+        <li><span>Press <b>Convene the council</b> and watch them argue it out, live.</span></li>
         <li><span>When the verdict lands, download it as a PDF.</span></li>
       </ol>
     </div>
@@ -35,29 +37,29 @@ const GUIDE = `
         <li><span><b>What success looks like</b>, and by when.</span></li>
         <li><span><b>Which way you're leaning</b>, and why. The council tests it.</span></li>
       </ul>
-      <p class="note" style="margin-top:8px">Left something out? The Chair asks before the council starts.</p>
+      <p class="note" style="margin-top:8px">Left something out? The Chair writes down what it had to assume, and the seats challenge it.</p>
     </div>
     <div class="guide-sec">
       <h4>Example</h4>
       <div class="example">
-        <p><code>/roast-room</code> ${EXAMPLE.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>
-        <button class="ghost" type="button" data-copy-example>Copy this example</button>
+        <p>${EXAMPLE.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>
+        <button class="ghost" type="button" data-copy-example>Use this example</button>
       </div>
     </div>
     <div class="guide-sec">
       <h4>Good to know</h4>
       <ul>
-        <li><span><b>Pick your council:</b> the Chair recommends the advisors that fit your question and asks you to confirm. Add or drop anyone.</span></li>
-        <li><span><b>Full council:</b> 5 to 7 advisors, 3 rounds. For big calls that are hard to undo.</span></li>
-        <li><span><b>Quick:</b> add <code>--quick</code> for 4 advisors and 2 rounds. Uses far less of your plan.</span></li>
-        <li><span><b>Every council is saved.</b> Open Past sessions to replay one or download its PDF.</span></li>
-        <li><span><b>Add an advisor:</b> type <code>/newroaster</code> and a name. Change your default board with <code>/roast-room board</code>.</span></li>
+        <li><span><b>Full council:</b> 5 to 7 advisors, 3 rounds. For big calls that are hard to undo. A few minutes.</span></li>
+        <li><span><b>Quick:</b> 4 advisors and 2 rounds. Faster and cheaper.</span></li>
+        <li><span><b>Who sits:</b> let the Chair pick the advisors that fit your question, seat your default board, or choose them yourself.</span></li>
+        <li><span><b>Saved in this browser.</b> Open Past sessions to replay a council or download its PDF. Clearing site data removes them.</span></li>
+        <li><span><b>Powered by xAI Grok</b> through Vercel AI Gateway: one model call per seat per round, plus the Chair.</span></li>
       </ul>
     </div>
   </div>`;
 
 const SHAPES = ["base", "open", "mid", "blink"];
-// A seat's cartoon frames live in /portraits/<key>-<shape>.webp (or .png, .jpg). A seat added with /newroaster
+// A seat's cartoon frames live in /portraits/<key>-<shape>.webp (or .png, .jpg). A newer seat
 // may have only a base frame, or none: missing frames fall back to the base frame, then to a
 // drawn bust in the seat's color whose mouth and eyes still move.
 const portrait = (key, shape = "base") => {
@@ -99,44 +101,73 @@ const state = {
 
 // ------------------------------------------------------------- boot
 async function boot() {
-  const r = await refreshSeats();
-  state.runner = r.runner;
-  if (r.runner === "api" && !r.hasKey) toast("No ANTHROPIC_API_KEY found in .env. Add it and restart the server.");
+  await refreshSeats();
   renderSeats(state.board);
   renderSamples();
+  renderPicker();
   bindUI();
   new ResizeObserver(() => { layoutStage(); drawLinks(); }).observe($("#stage"));
   startBlinking();
   reset();
   typeIn($("#composer h2"));
-  typeIn($("#waiting h2"));
-  const ss = await fetch("/api/sessions").then((x) => x.json());
-  if (ss.running) attach(ss.running);
-  else if (ss.live) attach(ss.live);
-  refreshUsage();
-  setInterval(watchForLive, 2500);
+  fetch("/api/config").then((x) => x.json()).then((c) => {
+    state.config = c;
+    if (c.auth === "none") toast("No AI Gateway credentials. Set AI_GATEWAY_API_KEY in .env (or run `vercel env pull`) and restart.");
+  }).catch(() => {});
   setInterval(tickWait, 1000);
 }
 
-// The roster (every seat, plus the default board) comes from the skill's roster.json.
+// The roster (every seat, its portrait frames, and the default board), written at build time.
 async function refreshSeats() {
-  const r = await fetch("/api/seats").then((x) => x.json());
+  const r = await fetch("/data/roster.json").then((x) => x.json());
   state.seats = r.seats;
   state.byKey = Object.fromEntries(r.seats.map((s) => [s.key, s]));
-  state.board = (r.board?.default || []).filter((k) => state.byKey[k]);
-  if (!state.board.length) state.board = r.seats.slice(0, 7).map((s) => s.key);
+  setRoster(r.seats);
+  state.defaultBoard = (r.board?.default || []).filter((k) => state.byKey[k]);
+  if (!state.defaultBoard.length) state.defaultBoard = r.seats.slice(0, 7).map((s) => s.key);
+  state.board = state.defaultBoard.slice();
   bustCache.clear();
   return r;
 }
 
-// a council started in Claude Code shows up here on its own
-const seenLive = new Set();
-async function watchForLive() {
-  const ss = await fetch("/api/sessions").then((x) => x.json()).catch(() => null);
-  const id = ss?.live || ss?.running;
-  if (!id || seenLive.has(id) || id === state.session) return;
-  seenLive.add(id);
-  attach(id);
+// ------------------------------------------------------------- who sits at the table
+const PICK_KEY = "roastroom:table";
+function loadPick() {
+  try { return { who: "chair", custom: [], ...JSON.parse(localStorage.getItem(PICK_KEY) || "{}") }; } catch { return { who: "chair", custom: [] }; }
+}
+function renderPicker() {
+  const pick = loadPick();
+  pick.custom = pick.custom.filter((k) => state.byKey[k]);
+  if (!pick.custom.length) pick.custom = state.defaultBoard.slice();
+  $("#whoSits").innerHTML = [["chair", "Chair picks", "the best fit from all " + state.seats.length], ["default", "Default board", state.defaultBoard.map((k) => state.byKey[k].short).join(", ")], ["custom", "Choose seats", "pick 3 to 9"]]
+    .map(([v, t, sub]) => `<label><input type="radio" name="who" value="${v}"${pick.who === v ? " checked" : ""}><span>${esc(t)} <small>${esc(sub)}</small></span></label>`).join("");
+  $("#seatChoice").innerHTML = state.seats.map((s) => `<label title="${esc(s.pillar)}"><input type="checkbox" value="${esc(s.key)}"${pick.custom.includes(s.key) ? " checked" : ""}><span>${esc(s.short)}</span></label>`).join("");
+  const sync = () => {
+    const who = $('input[name="who"]:checked')?.value || "chair";
+    const custom = $$("#seatChoice input:checked").map((x) => x.value);
+    $("#seatChoice").hidden = who !== "custom";
+    localStorage.setItem(PICK_KEY, JSON.stringify({ who, custom }));
+    if (!state.session) {
+      state.board = who === "custom" && custom.length ? custom.slice(0, MAX_TABLE) : state.defaultBoard.slice();
+      renderSeats(state.board);
+    }
+  };
+  $("#whoSits").addEventListener("change", sync);
+  $("#seatChoice").addEventListener("change", (e) => {
+    if ($$("#seatChoice input:checked").length > MAX_TABLE) { e.target.checked = false; toast(`The table seats ${MAX_TABLE} at most.`); }
+    sync();
+  });
+  sync();
+}
+function tableChoice() {
+  const who = $('input[name="who"]:checked')?.value || "chair";
+  if (who === "custom") {
+    const board = $$("#seatChoice input:checked").map((x) => x.value);
+    if (board.length < 3) throw new Error("Choose at least three seats.");
+    return { pick: false, board };
+  }
+  if (who === "default") return { pick: false, board: state.defaultBoard.slice() };
+  return { pick: true, board: state.seats.map((s) => s.key) };
 }
 
 // AIS arrival: a heading types in a character at a time, blur to sharp
@@ -238,15 +269,14 @@ function moveSpot(key) {
 function bindUI() {
   $("#composer").addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (state.running) return toast("A council is already in session. Wait for its verdict.");
     const prompt = $("#prompt").value.trim();
     if (prompt.length < 10) return toast("Give the council a real decision, at least a sentence.");
+    if (prompt.length > 4000) return toast("Keep it under 4,000 characters.");
     const mode = $('input[name="mode"]:checked').value;
-    $("#convene").disabled = true;
-    const r = await fetch("/api/council", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ prompt, mode }) });
-    const j = await r.json();
-    $("#convene").disabled = false;
-    if (!r.ok) return toast(j.error || "Could not start the council.");
-    attach(j.id);
+    let table;
+    try { table = tableChoice(); } catch (err) { return toast(err.message); }
+    convene(prompt, mode, table);
   });
   const openFrom = (e) => { const b = e.target.closest("[data-seat]"); if (b) openCard(b.dataset.seat); };
   $("#seats").addEventListener("click", openFrom);
@@ -258,8 +288,11 @@ function bindUI() {
   $("#guideBtn").addEventListener("click", openGuide);
   document.addEventListener("click", async (e) => {
     if (e.target.closest("[data-copy-example]")) {
-      try { await navigator.clipboard.writeText("/roast-room " + EXAMPLE); toast("Copied. Paste it into Claude Code."); }
-      catch { toast("Copy didn't work here. Select the text and copy it."); }
+      if (state.running) return toast("A council is in session. Start a new one when it finishes.");
+      if (state.session) reset();
+      $("#guideDialog").close();
+      $("#prompt").value = EXAMPLE;
+      $("#prompt").focus();
     }
     if (e.target.closest("[data-pdf]")) savePdf(e.target.closest("[data-pdf]"));
   });
@@ -319,14 +352,13 @@ const player = {
 
 // ------------------------------------------------------------- session wiring
 function reset() {
-  state.es?.close();
-  player.reset();
+  player.reset(); // a council still running keeps going in the background and is saved when it ends
   Object.assign(state, { session: null, options: [], weights: {}, active: [], round: 0, cards: { 1: {}, 2: {}, 3: {} }, replaying: false, verdict: null, links: [], speaking: null, setup: null, wait: null });
   hideWait();
   $("#stage").classList.remove("live");
   $("#topic").hidden = true;
-  $("#composer").hidden = state.runner !== "api";
-  $("#waiting").hidden = state.runner === "api";
+  $("#composer").hidden = false;
+  $("#waiting").hidden = true;
   $("#caption").hidden = true;
   $("#cruxes").hidden = true;
   $("#plate").hidden = true;
@@ -357,19 +389,36 @@ function begin(id) {
   chairSays("The council is taking their seats", { dots: true });
 }
 
-function attach(id) {
+// Run a council here in the browser: each step is one short call to /api/chair or /api/seat.
+async function convene(prompt, mode, table) {
+  const id = `${new Date().toISOString().slice(0, 10)}-${Date.now().toString(36)}`;
   begin(id);
-  const es = new EventSource(`/api/stream/${id}`);
-  state.es = es;
-  es.onmessage = (m) => {
-    const ev = JSON.parse(m.data);
-    if (ev.type === "end") { es.close(); refreshUsage(); return; }
-    if (ev.type === "delta") return; // seats speak from their finished cards
-    if (ev.type === "usage") return refreshUsage();
-    if (ev.type === "seat_error") return toast(`${state.byKey[ev.seat].short} hit an error: ${ev.error}`);
+  const rec = { id, prompt, mode, status: "running", title: "", events: [], started: Date.now() };
+  const ctl = new AbortController();
+  Object.assign(state, { running: id, abort: ctl });
+  $("#convene").disabled = true;
+  const save = () => { if (!saveLocal(rec)) toast("This browser is out of space, so this council was not saved."); };
+  const emit = (ev) => {
+    if (ev.type === "setup") rec.title = ev.title;
+    if (ev.type !== "seat_error") rec.events.push(ev);
+    if (state.session !== id) return; // the user left this council; keep recording it
+    if (ev.type === "seat_error") return toast(`${state.byKey[ev.seat]?.short || ev.seat} could not answer: ${ev.error}`);
     player.push(ev);
+    refreshUsage();
   };
-  es.onerror = () => { /* the browser retries; the server replays from the start */ };
+  try {
+    const { ms } = await runCouncil({ prompt, mode, table, emit, byKey: state.byKey, signal: ctl.signal });
+    rec.status = "done";
+    rec.ms = ms;
+  } catch (e) {
+    rec.status = ctl.signal.aborted ? "stopped" : "error";
+    if (!ctl.signal.aborted) emit({ type: "error", t: Date.now() - rec.started, error: String(e.message || e) });
+  } finally {
+    if (state.running === id) Object.assign(state, { running: null, abort: null });
+    $("#convene").disabled = false;
+    if (rec.events.length > 1) save();
+    refreshUsage();
+  }
 }
 
 // ------------------------------------------------------------- event handling
@@ -774,17 +823,32 @@ function onVerdict(ev) {
 }
 
 // ------------------------------------------------------------- history + replay
+async function allSessions() {
+  const ex = await fetch("/data/examples.json").then((x) => x.json()).catch(() => ({ sessions: [] }));
+  return [...listLocal(), ...ex.sessions];
+}
+
+async function loadSession(id) {
+  const mine = loadLocal(id);
+  if (mine) return mine;
+  const r = await fetch(`/data/sessions/${encodeURIComponent(id)}.json`);
+  if (!r.ok) throw new Error("That session is not available.");
+  return r.json();
+}
+
 async function openHistory() {
-  const { sessions } = await fetch("/api/sessions").then((x) => x.json());
+  const sessions = await allSessions();
   $("#historyList").innerHTML = sessions.length
-    ? sessions.map((s) => `<li><button data-id="${esc(s.id)}"><b>${esc(s.title)}</b><small>${esc(s.id.slice(0, 10))} · ${esc(s.mode)} · ${esc(s.status)}</small></button>${s.status === "done" ? `<button class="pdf" type="button" data-pdf="${esc(s.id)}" title="Download the verdict as a PDF">PDF</button>` : ""}</li>`).join("")
+    ? sessions.map((s) => `<li><button data-id="${esc(s.id)}"><b>${esc(s.title)}</b><small>${esc(s.example ? "example" : s.id.slice(0, 10))} · ${esc(s.mode)} · ${esc(s.status)}</small></button>${s.status === "done" ? `<button class="pdf" type="button" data-pdf="${esc(s.id)}" title="Download the verdict as a PDF">PDF</button>` : ""}</li>`).join("")
     : '<li class="muted">No sessions yet. Convene the council once and it shows up here.</li>';
   $$("#historyList button[data-id]").forEach((b) => b.addEventListener("click", () => { $("#historyDialog").close(); replay(b.dataset.id); }));
   $("#historyDialog").showModal();
 }
 
 async function replay(id) {
-  const j = await fetch(`/api/sessions/${encodeURIComponent(id)}`).then((x) => x.json());
+  let j;
+  try { j = await loadSession(id); } catch (e) { return toast(e.message); }
+  if (state.running && state.running !== id) toast("The live council keeps running and is saved when it finishes.");
   begin(id);
   state.replaying = true;
   for (const ev of j.events) {
@@ -793,10 +857,10 @@ async function replay(id) {
   }
 }
 
-// ------------------------------------------------------------- waiting on Claude Code
+// ------------------------------------------------------------- waiting on the models
 // A live council goes quiet for minutes while the seats write in parallel. Instead of a
 // frozen table, say what is happening, how long it has been, and what each seat is weighing.
-const SAME_TIME = "The advisors all write at the same time in Claude Code. Their lines play here as soon as the round is in.";
+const SAME_TIME = "The advisors all write at the same time. Their lines play here as each one lands.";
 function waitCopy(phase) {
   const n = state.setup?.mode === "quick" ? 2 : 3;
   return {
@@ -887,7 +951,7 @@ async function savePdf(btn) {
   try {
     let setup = state.setup, verdict = state.verdict;
     if (id) { // a past session from the history list
-      const j = await fetch("/api/sessions/" + encodeURIComponent(id)).then((x) => x.json());
+      const j = await loadSession(id);
       setup = j.events.find((e) => e.type === "setup");
       verdict = [...j.events].reverse().find((e) => e.type === "verdict");
     }
@@ -911,11 +975,10 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (t.hidden = true), 6000);
 }
-async function refreshUsage() {
-  const u = await fetch("/api/usage").then((x) => x.json()).catch(() => null);
-  if (!u || !u.calls) { $("#usage").textContent = ""; return; }
+function refreshUsage() {
+  if (!usage.calls) { $("#usage").textContent = ""; return; }
   const k = (n) => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n / 1000)}k`);
-  $("#usage").textContent = `${u.calls} calls · ${k(u.input + u.cacheRead + u.cacheWrite)} in · ${k(u.output)} out`;
+  $("#usage").textContent = `${usage.calls} calls · ${k(usage.input)} in · ${k(usage.output)} out`;
 }
 
 boot();

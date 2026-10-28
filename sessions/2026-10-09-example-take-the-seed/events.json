@@ -1,0 +1,1423 @@
+{
+ "id": "2026-10-09-example-take-the-seed",
+ "title": "Take the $4M seed or keep bootstrapping",
+ "mode": "full",
+ "status": "done",
+ "prompt": "",
+ "events": [
+  {
+   "type": "phase",
+   "t": 1,
+   "phase": "setup",
+   "label": "The Chair is reading your question",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "setup",
+   "t": 1,
+   "title": "Take the $4M seed or keep bootstrapping",
+   "decision": "Take a $4M VC seed, raise $1M from angels, or keep bootstrapping.",
+   "brief": "B2B SaaS for home-services companies, $40k MRR growing 4% a month, profitable, $180k in the bank. CEO works 65 hours and does all sales.",
+   "options": [
+    {
+     "id": "A",
+     "label": "Take the $4M seed at $20M post"
+    },
+    {
+     "id": "B",
+     "label": "Raise $1M from operator angels on a SAFE"
+    },
+    {
+     "id": "C",
+     "label": "Keep bootstrapping"
+    }
+   ],
+   "assumptions": [
+    "Two funded competitors above $3M ARR"
+   ],
+   "weights": {
+    "bezos": {
+     "weight": 2,
+     "reason": "One-way door"
+    },
+    "graham": {
+     "weight": 3,
+     "reason": "Fundraising and growth rate"
+    },
+    "hormozi": {
+     "weight": 2,
+     "reason": "Can money turn into growth"
+    },
+    "garyvee": {
+     "weight": 1,
+     "reason": "Distribution at the edges"
+    },
+    "martell": {
+     "weight": 2,
+     "reason": "Founder at 65 hours"
+    },
+    "wickman": {
+     "weight": 2,
+     "reason": "Can a 6-person team absorb it"
+    },
+    "buffett": {
+     "weight": 3,
+     "reason": "Dilution and cost of capital"
+    },
+    "naval": {
+     "weight": 1,
+     "reason": ""
+    },
+    "sanchez": {
+     "weight": 1,
+     "reason": ""
+    },
+    "blakely": {
+     "weight": 1,
+     "reason": ""
+    },
+    "leila": {
+     "weight": 1,
+     "reason": ""
+    },
+    "musk": {
+     "weight": 1,
+     "reason": ""
+    }
+   },
+   "seats": [
+    "bezos",
+    "graham",
+    "hormozi",
+    "garyvee",
+    "martell",
+    "wickman",
+    "buffett"
+   ],
+   "mode": "full"
+  },
+  {
+   "type": "phase",
+   "t": 1,
+   "phase": "round1",
+   "label": "Round 1: opening positions",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "round_start",
+   "t": 1,
+   "round": 1,
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "bezos"
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "graham"
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "hormozi"
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "garyvee"
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "martell"
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "wickman"
+  },
+  {
+   "type": "seat_start",
+   "t": 1,
+   "round": 1,
+   "seat": "buffett"
+  },
+  {
+   "type": "seat_done",
+   "t": 8,
+   "round": 1,
+   "seat": "graham",
+   "text": "SEAT: GRAHAM (Product and startups)\nSTANCE: Conditional yes\nOPTION SCORES: A 2/10 · B 7/10 · C 6/10\nPILLAR SCORE: 6/10 · CONFIDENCE: 4/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: Take B, the $1M SAFE, but spend it only on getting the CEO off sales calls and on cutting churn, and keep the company at or near profitable.\n\nWHY:\n1. Startup = Growth (S100). 4% a month works out to 1.6x a year, which is about 1% a week, and that is slow. The VC wants 3x in 18 months, which takes 6.3% a month. All of today's growth comes from word of mouth and one Facebook group, and I see no evidence that money turns into growth here. Option A signs them up for a number they have no machine to hit.\n2. Default alive (S080). They're already there. \"Once you cross the threshold of profitability, however low, your runway becomes infinite.\" (S145) That's the best position to raise from, because they don't need it. Taking $4M with a 3x mandate is how you end up hiring ahead of demand, and \"Hiring too fast is by far the biggest killer of startups that raise money.\" (S080)\n3. Equity equation (S169). B gives up 8%, so it has to lift the outcome by about 9%. If freeing the CEO moves growth from 4% to 5% a month, the five-year multiple goes from 10.5x to 18.7x, which clears 9% easily. A gives up 20% and needs a 25% lift, and it has a second problem. At a $20M post, a $50M exit only returns the VC 2.5x, so the board will push for an outcome the founders have said they don't need. On the competitors: \"Competitors are rarely what kills startups. Poor execution does.\" (S056) Neither competitor serves shops under 10 technicians.\n\nC is close behind. Its weak spot is that 4% a month for five years gets MRR to about $420k, roughly $5M ARR, which probably falls short of $50M. Growth rate decides this, so some money pointed at growth beats none.\n\nTHE RISK I SEE: 2.5% monthly logo churn means losing about 26% of customers a year. Any money spent on acquisition goes into a leaky bucket.\nWHAT WOULD CHANGE MY MIND: If a hired rep (not the CEO) can push net growth past 6% a month within a 60-day test, the 3x becomes reachable and I'd look at A again.\nWHAT I'D DO THIS WEEK: Call every customer who churned in the last 90 days (about 15) and find out why they left.\nQUESTION FOR THE FOUNDER: What would the first $500k of the $4M go to, and what evidence do you have that it raises the growth rate?",
+   "parsed": {
+    "stance": "Conditional yes",
+    "call": "Take B, the $1M SAFE, but spend it only on getting the CEO off sales calls and on cutting churn, and keep the company at or near profitable.",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 6,
+    "finalScore": null,
+    "confidence": 4,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "What would the first $500k of the $4M go to, and what evidence do you have that it raises the growth rate?",
+    "risk": "2.5% monthly logo churn means losing about 26% of customers a year. Any money spent on acquisition goes into a leaky bucket.",
+    "thisWeek": "Call every customer who churned in the last 90 days (about 15) and find out why they left."
+   },
+   "quotes": [
+    {
+     "quote": "Once you cross the threshold of profitability, however low, your runway becomes infinite.",
+     "source": "S145",
+     "verified": true
+    },
+    {
+     "quote": "Hiring too fast is by far the biggest killer of startups that raise money.",
+     "source": "S080",
+     "verified": true
+    },
+    {
+     "quote": "Competitors are rarely what kills startups. Poor execution does.",
+     "source": "S056",
+     "verified": true
+    }
+   ],
+   "name": "Paul Graham"
+  },
+  {
+   "type": "seat_done",
+   "t": 12,
+   "round": 1,
+   "seat": "buffett",
+   "text": "SEAT: BUFFETT (Money and capital)\nSTANCE: Conditional yes\nOPTION SCORES: A 3/10 · B 7/10 · C 6/10\nPILLAR SCORE: 7/10 · CONFIDENCE: 3/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: I'd take B, the $1M SAFE, and spend it on two things: a closer so the CEO stops carrying all the sales, and cutting churn. I wouldn't spend it on a race.\n\nWHY:\n1. By my ranking this is already a great business. It grows about 60% a year with an 82% gross margin, it makes a profit, and growth uses almost no capital (Great, good, and gruesome, S080). Forcing $4M through it risks turning See's into an airline.\n2. Here is A's cash math. At 4% a month you reach about $81k MRR in 18 months. Tripling to $120k takes 6.3% a month, which works out to roughly 250 extra customers. Say $3.6M goes to buying them (my assumption). That's about $14k a customer against lifetime gross profit of about $6,600: $164 a month over a 40-month life at 2.5% churn. \"Some companies will turn these retained dollars into fifty-cent pieces, others into two-dollar bills.\" (S083)\n3. A's price is about 42x ARR, so it passes the issuance test on paper (S055). The real cost is the board seat and the fund math. A $50M exit would thrill these founders, but it disappoints a VC who bought in at $20M post, so that board seat will push for a bigger swing than the owners want. \"Don't ask the barber whether you need a haircut.\" (S082) B still gets about 25x ARR for 8%, and nobody gets a hand on the plug. My lens is known to misfire on raising money, so this is the issuance test applied to these numbers. It's not a blanket no on outside money.\n\nTHE RISK I SEE: One founder working 65 hours a week is the whole sales engine. If he breaks, B and C stall alike (Noah's Law, S088).\nWHAT WOULD CHANGE MY MIND: A tested paid channel with customer acquisition cost under $2,000 and payback under 12 months, holding up at $100k a month of spend. Then A's dollars would earn more than a dollar, and I'd move.\nWHAT I'D DO THIS WEEK: Write A's 18-month plan on one page (hires, burn, and cost per new customer) and check it against the $6,600 a customer is worth.\nQUESTION FOR THE FOUNDER: If you take A and you're at 2x with $1M left in month 15, who decides what happens next?",
+   "parsed": {
+    "stance": "Conditional yes",
+    "call": "I'd take B, the $1M SAFE, and spend it on two things: a closer so the CEO stops carrying all the sales, and cutting churn. I wouldn't spend it on a race.",
+    "optionScores": {
+     "A": 3,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 7,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "If you take A and you're at 2x with $1M left in month 15, who decides what happens next?",
+    "risk": "One founder working 65 hours a week is the whole sales engine. If he breaks, B and C stall alike (Noah's Law, S088).",
+    "thisWeek": "Write A's 18-month plan on one page (hires, burn, and cost per new customer) and check it against the $6,600 a customer is worth."
+   },
+   "quotes": [
+    {
+     "quote": "Some companies will turn these retained dollars into fifty-cent pieces, others into two-dollar bills.",
+     "source": "S083",
+     "verified": true
+    },
+    {
+     "quote": "Don't ask the barber whether you need a haircut.",
+     "source": "S082",
+     "verified": true
+    }
+   ],
+   "name": "Warren Buffett"
+  },
+  {
+   "type": "seat_done",
+   "t": 15,
+   "round": 1,
+   "seat": "bezos",
+   "text": "SEAT: BEZOS (Strategy and decisions)\nSTANCE: Yes\nOPTION SCORES: A 3/10 · B 8/10 · C 6/10\nPILLAR SCORE: 8/10 · CONFIDENCE: 4/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: Take B, the $1M from operator angels, and spend it on getting the CEO off every sales call and bringing churn down.\n\nWHY:\n1. I sort the door first (Type 1 and Type 2, S063). A is a one-way door. The cash is easy to spend, but the board seat and the 3x plan are hard to give back. At $20M post, a $50M sale returns the VC 2.5x, which is a weak result for a fund, so the board will lean against the very outcome you say you want. B costs 8% and leaves the decisions with you.\n2. The 3x plan doesn't fit this business. At 4% a month you get 2.0x in 18 months, and 3x needs about 6.3% a month with no sales team. Missing a board's plan while carrying $4M of payroll is how a profitable company turns desperate. \"I don't believe in bet the company bets that's when you're desperate\" (S018).\n3. Early capital should take risks off the table (systematic risk elimination, S008). Your two biggest risks are a CEO who runs every sale and 2.5% monthly churn, which is about 26% of customers a year. I'm assuming a seller and an onboarding hire cost about $300k a year all-in, so $1M pays for three years of work on exactly those two problems.\n4. Work backwards from the customer (S056). Ten years from now a six-truck plumber will still want fewer missed jobs and fast support, and the funded rivals don't serve him. \"Don't be afraid of our competitors, because they're never going to send us any money. Be afraid of our customers.\" (S047)\n\nC can work too. You're default alive, so a long clock is safe here, which is rare for a company this size. The problem with C is that the CEO stays the whole sales engine.\n\nTHE RISK I SEE: The angel money goes into general headcount, churn stays at 2.5%, and you pour fuel into a leaking tank.\nWHAT WOULD CHANGE MY MIND: A 90-day test where a hired seller pushes monthly growth above 6.5% with CAC payback under 12 months. Then A is a fair bet, and at a better price than $20M.\nWHAT I'D DO THIS WEEK: Ask the five angels to close, and post the sales role before the CEO's next demo.\nQUESTION FOR THE FOUNDER: If someone offers $50M in year three, will you take it, and would your VC let you?",
+   "parsed": {
+    "stance": "Yes",
+    "call": "Take B, the $1M from operator angels, and spend it on getting the CEO off every sales call and bringing churn down.",
+    "optionScores": {
+     "A": 3,
+     "B": 8,
+     "C": 6
+    },
+    "pillar": 8,
+    "finalScore": null,
+    "confidence": 4,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "If someone offers $50M in year three, will you take it, and would your VC let you?",
+    "risk": "The angel money goes into general headcount, churn stays at 2.5%, and you pour fuel into a leaking tank.",
+    "thisWeek": "Ask the five angels to close, and post the sales role before the CEO's next demo."
+   },
+   "quotes": [
+    {
+     "quote": "I don't believe in bet the company bets that's when you're desperate",
+     "source": "S018",
+     "verified": true
+    },
+    {
+     "quote": "Don't be afraid of our competitors, because they're never going to send us any money. Be afraid of our customers.",
+     "source": "S047",
+     "verified": true
+    }
+   ],
+   "name": "Jeff Bezos"
+  },
+  {
+   "type": "seat_done",
+   "t": 20,
+   "round": 1,
+   "seat": "hormozi",
+   "text": "SEAT: HORMOZI (Offers, pricing, and sales)\nSTANCE: Yes\nOPTION SCORES: A 2/10 · B 5/10 · C 8/10\nPILLAR SCORE: 6/10 · CONFIDENCE: 3/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: Turn down A, run C with a 90-day money model fix (annual prepay, a setup fee, a price test on new customers, and one hired closer), and keep the angels warm as a fallback.\n\nWHY:\n1. LTV to CAC (S070). Gross profit is $164 a month per customer. At 2.5% churn a customer stays about 40 months, so lifetime gross profit is about $6,560. People staff sales and onboarding here, so the floor sits nearer 6:1 than 3:1 (S089), which caps CAC at about $1,100. Nobody has measured CAC on a single paid channel. A means putting $4M into an acquisition engine that has never been tested.\n2. Client-financed acquisition (S037): \"30-day cash must be greater than two times the cost of acquiring customer and the cost of fulfilling that customer.\" Monthly billing collects $200 in the first 30 days, which fails at any real CAC. Annual billing at ten months' price ($2,000) plus a $500 setup fee collects $2,500 up front. If 60 of the 200 current customers switch to annual, that's $120k in cash, two-thirds of what's in the bank, with zero dilution.\n3. Constraint first (S113). The constraint is sales: one founder working 65 hours and taking every call. Money doesn't fix that. A closer and a better offer do. Hitting 3x in 18 months needs about 6.3% monthly growth, roughly 32 new customers a month against about 13 today. Retention is already fine: \"Churn under 3%. That's what you want.\" (S113)\n\nTHE RISK I SEE: The founder stays the only closer and the money model changes never ship. C then becomes 4% a month forever while the funded rivals move down-market.\nWHAT WOULD CHANGE MY MIND: A tested channel showing CAC under $1,100, payback under 6 months, and 30+ new customers a month. At that point outside money is fuel, and B (or even A) scores much higher.\nWHAT I'D DO THIS WEEK: Offer every current customer annual prepay as \"buy 10, get 2\" (S016) and count the yeses before the term sheet deadline.\nQUESTION FOR THE FOUNDER: What's your close rate on sales calls, and what does one new customer cost you all in? If it's above 80%, your $200 price is too low.\n\nAssumptions: CAC, close rate, and gross new adds are not in the brief. I took gross adds as about 13 a month: 8 net from 4% growth plus 5 lost to churn.",
+   "parsed": {
+    "stance": "Yes",
+    "call": "Turn down A, run C with a 90-day money model fix (annual prepay, a setup fee, a price test on new customers, and one hired closer), and keep the angels warm as a fallback.",
+    "optionScores": {
+     "A": 2,
+     "B": 5,
+     "C": 8
+    },
+    "pillar": 6,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "What's your close rate on sales calls, and what does one new customer cost you all in? If it's above 80%, your $200 price is too low.",
+    "risk": "The founder stays the only closer and the money model changes never ship. C then becomes 4% a month forever while the funded rivals move down-market.",
+    "thisWeek": "Offer every current customer annual prepay as \"buy 10, get 2\" (S016) and count the yeses before the term sheet deadline."
+   },
+   "quotes": [
+    {
+     "quote": "Churn under 3%. That's what you want.",
+     "source": "S113",
+     "verified": true
+    }
+   ],
+   "name": "Alex Hormozi"
+  },
+  {
+   "type": "seat_done",
+   "t": 26,
+   "round": 1,
+   "seat": "martell",
+   "text": "SEAT: MARTELL (People, hiring, and founder time)\nSTANCE: Yes\nOPTION SCORES: A 4/10 · B 8/10 · C 5/10\nPILLAR SCORE: 8/10 · CONFIDENCE: 3/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: Take B, and commit the first $250k to the Replacement Ladder in order: an assistant, then an onboarding owner, then a closer.\n\nWHY:\n1. Buyback Rate (S018). I'm assuming the CEO takes $120k plus half of the $72k profit. That's $156k over 2,000 hours, divided by 4, so about $20 an hour. An offshore assistant costs $1,500 a month for 160 hours (S066), which is under $10 an hour. Every inbox and scheduling hour he keeps is money lost.\n2. Replacement Ladder (S031). Nobody holds the admin rung, and he still runs most onboarding himself. I'm assuming his 65 hours split into 25 for sales, 20 for onboarding, and 20 for admin and everything else. An assistant plus an onboarding owner frees about 25 hours. He puts those hours into sales and the Facebook group (Buyback Loop, S020). Once sales takes half his week, he hires a closer trained on 20 recorded calls (Camcorder Method, S020).\n3. Pain Line (S020). \"Entrepreneurs will not grow into pain.\" (S014) Option A asks for 3x in 18 months. That means about 6.3% growth a month against 4% today. I'm assuming roughly 15 hires plus a board seat. At about 20 founder hours per tested hire and 3 board hours a week, A adds around 7 hours to a 65-hour week before it frees a single one. B pays for the ladder without that deadline. C can pay for the assistant out of profit, but it can't carry the onboarding owner and the closer together, and \"You should not be capital constraint.\" (S017)\n\nTHE RISK I SEE: They spend the $1M on capacity, like two more engineers or a VP of Sales, while the CEO still runs onboarding at 65 hours. Or they hand sales to a rep before scripts exist, and the rep fails inside six months (S031).\nWHAT WOULD CHANGE MY MIND: A two-week audit showing he already turns away 20 or more qualified demos a month. In that case demand is bigger than capacity, and A's $4M would have work to do right away.\nWHAT I'D DO THIS WEEK: Start the two-week Time and Energy Audit on Monday, logging every 15 minutes, and record every sales and onboarding call as it happens.\nQUESTION FOR THE FOUNDER: Would you still want the $4M if you worked 45 hours a week and someone else owned onboarding?",
+   "parsed": {
+    "stance": "Yes",
+    "call": "Take B, and commit the first $250k to the Replacement Ladder in order: an assistant, then an onboarding owner, then a closer.",
+    "optionScores": {
+     "A": 4,
+     "B": 8,
+     "C": 5
+    },
+    "pillar": 8,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "Would you still want the $4M if you worked 45 hours a week and someone else owned onboarding?",
+    "risk": "They spend the $1M on capacity, like two more engineers or a VP of Sales, while the CEO still runs onboarding at 65 hours. Or they hand sales to a rep before scripts exist, and the rep fails inside six months (S031).",
+    "thisWeek": "Start the two-week Time and Energy Audit on Monday, logging every 15 minutes, and record every sales and onboarding call as it happens."
+   },
+   "quotes": [
+    {
+     "quote": "Entrepreneurs will not grow into pain.",
+     "source": "S014",
+     "verified": true
+    },
+    {
+     "quote": "You should not be capital constraint.",
+     "source": "S017",
+     "verified": true
+    }
+   ],
+   "name": "Dan Martell"
+  },
+  {
+   "type": "seat_done",
+   "t": 29,
+   "round": 1,
+   "seat": "wickman",
+   "text": "SEAT: WICKMAN (Operations and scaling)\nSTANCE: Conditional yes\nOPTION SCORES: A 2/10 · B 7/10 · C 5/10\nPILLAR SCORE: 6/10 · CONFIDENCE: 3/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: I'd take B, the $1M SAFE, but only after both co-founders sign one V/TO and only if the money goes to two seats that get the CEO out of sales and onboarding.\n\nWHY:\n1. The root problem here is People, and more capital won't fix it (Six Key Components, S043). Right now the CEO is the Visionary, the whole sales seat, and most of the onboarding seat, at 65 hours a week. Option A pours $4M into an Accountability Chart where one person holds three seats. \"We always teach structure first, people second.\" (S044)\n2. Option A's math breaks a six-person team. Going 3x in 18 months means MRR moves from $40k to $120k, which is about 6.3% net growth every month. At the current 4% (1.04^18), they land near $81k. With 2.5% churn on top, they'd need about 8.8% gross adds every month, and today every lead comes from one Facebook group and one founder's calendar. Getting there takes a sales team, an Integrator, roughly 15 to 20 people, and a board, all in 18 months. Board pressure also pulls the company up toward bigger shops and out of the under-10-technician Core Focus, which is the one market neither competitor serves (Core Focus, S110).\n3. The co-founders are split, with one on A and one on C. That's a Vision problem, and you can't settle it in a three-week reply window. \"Is your vision out of your brain in a document where your leadership team is crystal clear, 100% on the same page.\" (S066) With all due love and respect to the CEO, \"competitors with funding will outspend us\" is a decision made out of fear (Three Discoveries, S031).\n4. B passes the stress test (Reverse Accountability Chart, S098). Monthly costs run about $34k, so $180k covers roughly 5.3 months, which is just short of six. B adds $1M. Two hires at about $25k a month combined still leave more than 24 months of runway, even if revenue drops 50%. C leaves the CEO as the bottleneck, with only $6k a month of profit to fix that.\n\nTHE RISK I SEE: The money lands and the CEO still takes every sales call, so we've just bought a more expensive bottleneck.\nWHAT WOULD CHANGE MY MIND: If a non-founder already closes at least half of new deals and the CEO is under 50 hours a week, I'd move A up to a 6.\nWHAT I'D DO THIS WEEK: Get both co-founders out of the office for one full day to draw the Accountability Chart for 18 months out and put names in the seats before anyone replies to the VC. Stay focused.\nQUESTION FOR THE FOUNDER: Who is your Integrator, and is it either of you?",
+   "parsed": {
+    "stance": "Conditional yes",
+    "call": "I'd take B, the $1M SAFE, but only after both co-founders sign one V/TO and only if the money goes to two seats that get the CEO out of sales and onboarding.",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 5
+    },
+    "pillar": 6,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "Who is your Integrator, and is it either of you?",
+    "risk": "The money lands and the CEO still takes every sales call, so we've just bought a more expensive bottleneck.",
+    "thisWeek": "Get both co-founders out of the office for one full day to draw the Accountability Chart for 18 months out and put names in the seats before anyone replies to the VC. Stay focused."
+   },
+   "quotes": [
+    {
+     "quote": "We always teach structure first, people second.",
+     "source": "S044",
+     "verified": true
+    },
+    {
+     "quote": "Is your vision out of your brain in a document where your leadership team is crystal clear, 100% on the same page.",
+     "source": "S066",
+     "verified": true
+    }
+   ],
+   "name": "Gino Wickman"
+  },
+  {
+   "type": "seat_done",
+   "t": 34,
+   "round": 1,
+   "seat": "garyvee",
+   "text": "SEAT: GARY V (Marketing and attention)\nSTANCE: Yes (on B)\nOPTION SCORES: A 3/10 · B 7/10 · C 6/10\nPILLAR SCORE: 7/10 · CONFIDENCE: 3/5 · RUIN RISK: none · DOOR: two-way\n\nTHE CALL: Take B, the $1M from operator angels, and spend it on a community and content person plus a sales hire, so the attention engine you already own gets volume before anyone buys media.\n\nWHY:\n1. Underpriced attention (Day Trading Attention, S096). You already own the cheapest attention in this category, which is a Facebook group full of small-shop owners that neither funded competitor serves. My assumption from the brief: 4% net growth on 2.5% churn works out to about 13 gross new logos a month, all organic. That is beachfront property. Option A's 3x in 18 months means going from about 6.3% a month instead of 4%, which is 1.04^18, or roughly 2x. Closing that gap with no proven paid engine means buying search at market price, and in 2026 I called it \"search selling\" (S076, 2025) and said \"Google AdWords as we sit right now is in the same place that the yellow pages were in 2001.\" [S045, 2026-03]\n2. Organic first, then pay (S045, 2026): \"If it does well in views compared to your normal that's what you start running media on.\" A $4M check pushes you to spend before you have the creative to back it. With $1M you can earn the right to spend.\n3. Bet on strengths, staff around weaknesses (S128, 2015). The CEO runs 65 hours a week, does every sales call, and still runs the group. Volume (S038, 2026) cannot happen while one person does all of that. B pays for the two people who free the CEO, and it keeps control. \"The more money you can make, the more leverage you have for when you raise capital. The end.\" [S050, 2026-03]\n\nTHE RISK I SEE: The angel money goes to hires and features while the group and the content stay where they are, so you dilute 8% and buy nothing on distribution.\nWHAT WOULD CHANGE MY MIND: A paid test that brings in 40+ customers a month at under $1,500 CAC. My rough LTV is about $6,500 gross margin per customer. If that test works, A is fuel for a proven engine and I move toward it.\nWHAT I'D DO THIS WEEK: Record five onboarding calls (with permission) and the group's top ten questions, cut 30 short clips, post them to the group, Facebook, and YouTube Shorts within seven days, and put $100 behind the top over-indexer.\nQUESTION FOR THE FOUNDER: How many members does the group have, and how many of last quarter's new customers came straight from it?",
+   "parsed": {
+    "stance": "Yes (on B)",
+    "call": "Take B, the $1M from operator angels, and spend it on a community and content person plus a sales hire, so the attention engine you already own gets volume before anyone buys media.",
+    "optionScores": {
+     "A": 3,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 7,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "two-way",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "How many members does the group have, and how many of last quarter's new customers came straight from it?",
+    "risk": "The angel money goes to hires and features while the group and the content stay where they are, so you dilute 8% and buy nothing on distribution.",
+    "thisWeek": "Record five onboarding calls (with permission) and the group's top ten questions, cut 30 short clips, post them to the group, Facebook, and YouTube Shorts within seven days, and put $100 behind the top over-indexer."
+   },
+   "quotes": [
+    {
+     "quote": "Google AdWords as we sit right now is in the same place that the yellow pages were in 2001.",
+     "source": "S045",
+     "verified": true
+    },
+    {
+     "quote": "The more money you can make, the more leverage you have for when you raise capital. The end.",
+     "source": "S050",
+     "verified": true
+    }
+   ],
+   "name": "Gary Vaynerchuk"
+  },
+  {
+   "type": "round_done",
+   "t": 34,
+   "round": 1,
+   "scores": {
+    "A": {
+     "score": 2.7,
+     "math": "(2x3 + 3x2 + 2x2 + 1x3 + 2x4 + 2x2 + 3x3) / 15"
+    },
+    "B": {
+     "score": 7,
+     "math": "(2x8 + 3x7 + 2x5 + 1x7 + 2x8 + 2x7 + 3x7) / 15"
+    },
+    "C": {
+     "score": 6,
+     "math": "(2x6 + 3x6 + 2x8 + 1x6 + 2x5 + 2x5 + 3x6) / 15"
+    }
+   }
+  },
+  {
+   "type": "phase",
+   "t": 34,
+   "phase": "cruxes",
+   "label": "The Chair is finding the fault lines",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "cruxes",
+   "t": 34,
+   "cruxes": [
+    {
+     "question": "Is customer cash enough to fund the next two hires?",
+     "sides": [
+      {
+       "position": "Yes, prepay and profit cover it",
+       "seats": [
+        "hormozi",
+        "martell"
+       ]
+      },
+      {
+       "position": "No, prepay is pulled-forward revenue",
+       "seats": [
+        "graham",
+        "wickman",
+        "bezos"
+       ]
+      }
+     ]
+    },
+    {
+     "question": "What should the money buy first?",
+     "sides": [
+      {
+       "position": "A closer",
+       "seats": [
+        "buffett",
+        "garyvee"
+       ]
+      },
+      {
+       "position": "An onboarding owner to cut churn",
+       "seats": [
+        "graham",
+        "bezos",
+        "hormozi",
+        "wickman"
+       ]
+      }
+     ]
+    }
+   ],
+   "unanimous": false,
+   "note": "Nobody wants the $4M. The fight is whether to take any money at all, and what it buys first.",
+   "pressure": {}
+  },
+  {
+   "type": "phase",
+   "t": 34,
+   "phase": "round2",
+   "label": "Round 2: the debate",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "round_start",
+   "t": 34,
+   "round": 2,
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "seat_start",
+   "t": 34,
+   "round": 2,
+   "seat": "bezos"
+  },
+  {
+   "type": "seat_start",
+   "t": 35,
+   "round": 2,
+   "seat": "graham"
+  },
+  {
+   "type": "seat_start",
+   "t": 35,
+   "round": 2,
+   "seat": "hormozi"
+  },
+  {
+   "type": "seat_start",
+   "t": 35,
+   "round": 2,
+   "seat": "garyvee"
+  },
+  {
+   "type": "seat_start",
+   "t": 35,
+   "round": 2,
+   "seat": "martell"
+  },
+  {
+   "type": "seat_start",
+   "t": 35,
+   "round": 2,
+   "seat": "wickman"
+  },
+  {
+   "type": "seat_start",
+   "t": 35,
+   "round": 2,
+   "seat": "buffett"
+  },
+  {
+   "type": "seat_done",
+   "t": 36,
+   "round": 2,
+   "seat": "graham",
+   "text": "I DISAGREE MOST WITH: HORMOZI. He says prepay replaces the round and 2.5% churn is fine. On prepay: most of the $120k is revenue those 60 customers would pay anyway, pulled forward at a two-month discount. It's a loan from customers that covers about one hire for one year, and next year's cash from those 60 is already spent. Do it, but it doesn't buy the seats. On churn: 0.975^12 is 0.74, so a quarter of customers leave every year. Of about 13 gross adds a month, churn eats 5. Cut churn to 1.5% and net growth goes from 4% to 5% a month with no new spend. Over five years that's 18.7x instead of 10.5x. \"Under 3%\" may be a fine SMB benchmark. Growth is the compass (Startup = Growth, S100), and churn is the cheapest lever on it.\nI CONCEDE: Hormozi is right that nobody has measured CAC, so the money has no proven place to go yet. Because of that, the prepay offer and the churn calls happen before signing, not after.\nON THE CRUXES:\n1. They don't need it, and that's the best reason to take a little. \"if you want to raise money, the best thing you can do is get yourself to the point where you don't need to.\" (S093)\n2. It's a leak, and fixing it is worth a full point of monthly growth.\n3. An onboarding owner first. I suspect the early churn starts at onboarding. Then a closer.\n4. A split founding team is reason enough to refuse A. B is the option both can sign without a board deciding for them. The deadline belongs to the VC. The angels can close later.\nSTANCE: Conditional yes on B.\nOPTION SCORES: A 2/10 · B 7/10 · C 6/10 · PILLAR SCORE: 6/10 · CONFIDENCE: 4/5 · RUIN RISK: none\nMOVED: no. Prepay helps C's cash. C's weak spot was its growth rate, and prepay doesn't touch that.\nMY CONDITIONS FOR YES:\n1. Before signing, call all ~15 customers who churned in the last 90 days and write down why each one left.\n2. Offer annual prepay to all 200 customers before the term sheet deadline.\n3. Six months after close, monthly logo churn is under 1.5% and the CEO is on fewer than half of sales calls.",
+   "parsed": {
+    "stance": "Conditional yes on B.",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 6,
+    "finalScore": null,
+    "confidence": 4,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "hormozi",
+    "disagreeLine": "HORMOZI. He says prepay replaces the round and 2.5% churn is fine. On prepay: most of the $120k is revenue those 60 customers would pay anyway, pulled forward at a two-month discount. It's a loan from customers that covers about one hire for one year, and next year's cash from those 60 is already spent. Do it, but it doesn't buy the seats. On churn: 0.975^12 is 0.74, so a quarter of customers leave every year. Of about 13 gross adds a month, churn eats 5. Cut churn to 1.5% and net growth goes from 4% to 5% a month with no new spend. Over five years that's 18.7x instead of 10.5x. \"Under 3%\" may be a fine SMB benchmark. Growth is the compass (Startup = Growth, S100), and churn is the cheapest lever on it.",
+    "concede": "Hormozi is right that nobody has measured CAC, so the money has no proven place to go yet. Because of that, the prepay offer and the churn calls happen before signing, not after.",
+    "moved": "no. Prepay helps C's cash. C's weak spot was its growth rate, and prepay doesn't touch that.",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "if you want to raise money, the best thing you can do is get yourself to the point where you don't need to.",
+     "source": "S093",
+     "verified": true
+    }
+   ],
+   "name": "Paul Graham"
+  },
+  {
+   "type": "seat_done",
+   "t": 36,
+   "round": 2,
+   "seat": "buffett",
+   "text": "I DISAGREE MOST WITH: MARTELL. His argument is that C can't carry the ladder, because \"You should not be capital constraint.\" The arithmetic says otherwise. Take $6k a month of profit, subtract a closer at about $10k a month all-in (my assumption), and you get a $4k monthly burn that $180k covers for 45 months. The $1,500 assistant fits too. The constraint is the CEO's calendar, and money doesn't fix that. Selling 8% to fix a calendar fails the issuance test: \"You can’t get rich trading a hundred-dollar bill for eight tens.\" (Stock issuance test, S087)\nI CONCEDE: Hormozi is right that the prepay is the cheaper capital, and by a mile. Sixty customers at $2,000 brings in $120k. At 2.5% churn a monthly customer pays about $2,100 in year one, so the real discount is about $6k. That's a nickel per dollar, and it locks in a year of retention. B's $1M costs 8% of the $50M the founders want, which is $4M, or about $4 per dollar at their target. That makes my round 1 scoring a mistake: I ranked B over C without running C's runway with a closer. Two fixes. This is float, not profit, so it runs down over the year to an average of about $60k. And the $500 setup fee should apply to new customers only, because charging it to people who are already set up fails the newspaper test (S032).\nON THE CRUXES:\n1. They don't need the money to survive. Prepay plus profit pays for the closer. Take B only if the prepay comes up short.\n2. Churn is a leak. Cutting it from 2.5% to 1.5% stretches a customer's life from 40 to 67 months, and lifetime gross profit from $6,560 to about $10,900.\n3. A closer first, paid from profit. Onboarding second, because that's where churn starts.\n4. Don't take a one-way door with a split partnership, so A is out. The three-week clock is Mr. Market's quote and says nothing about the business (Mr. Market, S060).\nThe best banker a farm ever had is a customer who pays in advance.\nSTANCE: Conditional yes on C plus annual prepay, with B as the fallback.\nOPTION SCORES: A 2/10 · B 6/10 · C 7/10 · PILLAR SCORE: 7/10 · CONFIDENCE: 3/5 · RUIN RISK: none\nMOVED: yes, from B to C. By my own tests the prepay is cheaper capital, and C pays for a closer out of profit.\nMY CONDITIONS FOR YES:\n1. At least 40 customers sign annual prepay by day 14. If fewer sign, take B.\n2. A closer is hired within 60 days, and the CEO is under 50 hours a week by day 90.\n3. With the closer on payroll, cash stays at or above about $210k, which is 12 months of burn if revenue falls by a third (Financial staying power, S095).",
+   "parsed": {
+    "stance": "Conditional yes on C plus annual prepay, with B as the fallback.",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 6,
+     "C": 7
+    },
+    "pillar": 7,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "martell",
+    "disagreeLine": "MARTELL. His argument is that C can't carry the ladder, because \"You should not be capital constraint.\" The arithmetic says otherwise. Take $6k a month of profit, subtract a closer at about $10k a month all-in (my assumption), and you get a $4k monthly burn that $180k covers for 45 months. The $1,500 assistant fits too. The constraint is the CEO's calendar, and money doesn't fix that. Selling 8% to fix a calendar fails the issuance test: \"You can’t get rich trading a hundred-dollar bill for eight tens.\" (Stock issuance test, S087)",
+    "concede": "Hormozi is right that the prepay is the cheaper capital, and by a mile. Sixty customers at $2,000 brings in $120k. At 2.5% churn a monthly customer pays about $2,100 in year one, so the real discount is about $6k. That's a nickel per dollar, and it locks in a year of retention. B's $1M costs 8% of the $50M the founders want, which is $4M, or about $4 per dollar at their target. That makes my round 1 scoring a mistake: I ranked B over C without running C's runway with a closer. Two fixes. This is float, not profit, so it runs down over the year to an average of about $60k. And the $500 setup fee should apply to new customers only, because charging it to people who are already set up fails the newspaper test (S032).",
+    "moved": "yes, from B to C. By my own tests the prepay is cheaper capital, and C pays for a closer out of profit.",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [],
+   "name": "Warren Buffett"
+  },
+  {
+   "type": "seat_done",
+   "t": 36,
+   "round": 2,
+   "seat": "bezos",
+   "text": "I DISAGREE MOST WITH: HORMOZI. His argument is that annual prepay and a setup fee raise $120k with no dilution, so C plus a closer is enough. Run the prepay this week anyway, because it's a true two-way door. The catch is that it's next year's revenue collected early, not capital. Those 60 customers stop paying monthly, so collections drop about $12k a month. Add a closer and an onboarding owner at about $25k a month and the $6k profit becomes roughly $31k of monthly burn. That's about 10 months on $300k. If the first key hire misses, a six-person company can't easily undo it. \"What startup companies do is they take their precious early capital dollars and systematically eliminate risks.\" (S008) $1M at 8% pays for a second try.\nI CONCEDE: WICKMAN. I said close the angels this week. Asking them is a two-way door, but signing isn't. The 8% and the five names on the cap table stay. Signing B while one founder wants A and the other wants C risks the co-founder relationship, and that's the hardest thing here to reverse. So the angels soft-commit this week, and nobody signs until both founders commit in writing.\nON THE CRUXES:\n1. They don't need it to survive. They need it to remove two risks faster. Do the prepay too.\n2. It's a leak, about 26% of customers a year. \"Under 3%\" is a benchmark. Ten years from now a small shop still wants fast support, so call the customers who churned.\n3. An onboarding owner comes first, because that hire cuts churn and the CEO's hours together. A closer comes second.\n4. Yes, as long as it takes one day and one memo, not three weeks. Raise the split now, then disagree and commit. \"Being wrong may be less costly than you think, whereas being slow is going to be expensive for sure.\" (S064)\nSTANCE: Yes on B, sequenced.\nOPTION SCORES: A 2/10 · B 8/10 · C 6/10 · PILLAR SCORE: 8/10 · CONFIDENCE: 4/5 · RUIN RISK: none\nMOVED: yes, from \"close the angels this week\" to \"soft-commit this week, sign after both founders agree,\" because Wickman showed the co-founder split makes signing a fake two-way door.\nMY CONDITIONS FOR YES:\n1. Both co-founders sign a one-page memo choosing B and the use of funds by day 10 of the 21-day window.\n2. At least four of the five angels soft-commit in writing by day 7.\n3. The first $250k goes to an onboarding owner and a closer, with a target of monthly churn under 2% by day 90.",
+   "parsed": {
+    "stance": "Yes on B, sequenced.",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 8,
+     "C": 6
+    },
+    "pillar": 8,
+    "finalScore": null,
+    "confidence": 4,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "hormozi",
+    "disagreeLine": "HORMOZI. His argument is that annual prepay and a setup fee raise $120k with no dilution, so C plus a closer is enough. Run the prepay this week anyway, because it's a true two-way door. The catch is that it's next year's revenue collected early, not capital. Those 60 customers stop paying monthly, so collections drop about $12k a month. Add a closer and an onboarding owner at about $25k a month and the $6k profit becomes roughly $31k of monthly burn. That's about 10 months on $300k. If the first key hire misses, a six-person company can't easily undo it. \"What startup companies do is they take their precious early capital dollars and systematically eliminate risks.\" (S008) $1M at 8% pays for a second try.",
+    "concede": "WICKMAN. I said close the angels this week. Asking them is a two-way door, but signing isn't. The 8% and the five names on the cap table stay. Signing B while one founder wants A and the other wants C risks the co-founder relationship, and that's the hardest thing here to reverse. So the angels soft-commit this week, and nobody signs until both founders commit in writing.",
+    "moved": "yes, from \"close the angels this week\" to \"soft-commit this week, sign after both founders agree,\" because Wickman showed the co-founder split makes signing a fake two-way door.",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "What startup companies do is they take their precious early capital dollars and systematically eliminate risks.",
+     "source": "S008",
+     "verified": true
+    },
+    {
+     "quote": "Being wrong may be less costly than you think, whereas being slow is going to be expensive for sure.",
+     "source": "S064",
+     "verified": true
+    }
+   ],
+   "name": "Jeff Bezos"
+  },
+  {
+   "type": "seat_done",
+   "t": 37,
+   "round": 2,
+   "seat": "hormozi",
+   "text": "I DISAGREE MOST WITH: Wickman. His line is that $180k is 5.3 months of runway. That math treats a profitable company as if revenue went to zero. They clear $6k a month, so today their runway is forever. The number that matters is what happens after the hires. A closer plus an onboarding owner at about $25k a month turns +$6k into -$19k, and $180k lasts about 9.5 months. That still points to B, but for the right reason.\nI CONCEDE: Martell is right that $6k of profit can't carry both seats, and my own prepay math was wrong. If 60 customers prepay $2,000, $12k a month stops coming in for a year, and the two free months cost $24k. The setup fee only applies to new customers. With the hires, C runs $300k at -$31k a month, which is about 9.7 months, no better than skipping prepay. Prepay pulls next year's revenue forward. It isn't capital.\nON THE CRUXES:\n1. Yes, they need money, but not much. $1M covers both seats for about three years. Ship annual prepay anyway, because it tests value and annual renews far better (S015).\n2. 2.5% passes my bar (S113). The problem is the ceiling: 13 gross adds a month divided by 2.5% is 520 customers, about $104k MRR (Churn math, S025). At 1.5% the ceiling rises to about 870 customers and lifetime gross profit goes from $6,560 to about $10,900.\n3. Hire the onboarding owner first. Onboarding is the first retention lever (S018, S040), and it frees 20 CEO hours for sales. The closer comes second, by day 60.\n4. B is something both founders can live with. Don't let competitors make this call (S065).\nSTANCE: Yes on B, with the money model shipped before any spend.\nOPTION SCORES: A 2/10 · B 8/10 · C 5/10 · PILLAR SCORE: 7/10 · CONFIDENCE: 4/5 · RUIN RISK: none\nMOVED: yes, from C to B, because prepay is next year's revenue collected early. It doesn't pay for the seats.\nMY CONDITIONS FOR YES:\n1. Annual prepay is offered to all 200 customers before the reply deadline, and the yeses are counted.\n2. The onboarding owner is hired within 30 days, and new-cohort monthly churn is under 2% by day 120.\n3. The closer's fully loaded CAC is under $1,100 (the 6:1 floor, S089) by day 120, before any paid spend.",
+   "parsed": {
+    "stance": "Yes on B, with the money model shipped before any spend.",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 8,
+     "C": 5
+    },
+    "pillar": 7,
+    "finalScore": null,
+    "confidence": 4,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "wickman",
+    "disagreeLine": "Wickman. His line is that $180k is 5.3 months of runway. That math treats a profitable company as if revenue went to zero. They clear $6k a month, so today their runway is forever. The number that matters is what happens after the hires. A closer plus an onboarding owner at about $25k a month turns +$6k into -$19k, and $180k lasts about 9.5 months. That still points to B, but for the right reason.",
+    "concede": "Martell is right that $6k of profit can't carry both seats, and my own prepay math was wrong. If 60 customers prepay $2,000, $12k a month stops coming in for a year, and the two free months cost $24k. The setup fee only applies to new customers. With the hires, C runs $300k at -$31k a month, which is about 9.7 months, no better than skipping prepay. Prepay pulls next year's revenue forward. It isn't capital.",
+    "moved": "yes, from C to B, because prepay is next year's revenue collected early. It doesn't pay for the seats.",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [],
+   "name": "Alex Hormozi"
+  },
+  {
+   "type": "seat_done",
+   "t": 37,
+   "round": 2,
+   "seat": "martell",
+   "text": "I DISAGREE MOST WITH: Hormozi. His line is that money doesn't fix the sales constraint, and a closer and a better offer do. He's half right. On the Replacement Ladder (S020), sales is rung four: \"Most Founders should keep those conversation.\" (S020) A rep hired before scripts exist fails within six months (S031), and today nobody has recorded a single call. An assistant at $1,500 a month (S066) plus an onboarding owner frees about 25 of his 65 hours, and those hours go into sales. The closer comes once sales takes half his week and 20 calls are on tape (Camcorder Method, S020).\nI CONCEDE: Hormozi on where the money comes from. My own brain says to look at non-dilutive options first (S100) and \"I want to finance my growth through my customer financing\" (S030). One correction: the $120k is pulled forward, so it isn't new money. With 60 customers on annual plans, monthly collections drop about $12k for a year, and the $6k monthly profit becomes roughly minus $6k. The new cash is the $30k in setup fees. That covers rungs one and two, about $80k a year by my assumption. It does not also cover a closer.\nON THE CRUXES:\n1. Run the prepay offer this week. With 60 or more yeses by day 14, decline both raises. If it falls short, take B.\n2. Churn is under 3%, but it's an onboarding problem, and right now an exhausted CEO runs onboarding. That's why the onboarding owner comes before the closer.\n3. Assistant, then onboarding owner, then closer. Unchanged.\n4. The prepay count settles it, because both co-founders will accept that number. A is out either way.\nSTANCE: Conditional yes on C, funded by prepay, with B as the fallback.\nOPTION SCORES: A 3/10 · B 6/10 · C 7/10 · PILLAR SCORE: 8/10 · CONFIDENCE: 3/5 · RUIN RISK: none\nMOVED: yes, from B to C with prepay first, because Hormozi showed a way to fund the first two rungs with customer cash, and my own non-dilutive rule (S100, S030) outranks \"You should not be capital constraint.\" (S017)\nMY CONDITIONS FOR YES:\n1. 60 annual prepays signed by day 14.\n2. The assistant owns 100% of inbox and calendar by day 30.\n3. The CEO is under 50 hours a week by day 60, checked against a 15-minute audit. If he misses that, the problem was never money.",
+   "parsed": {
+    "stance": "Conditional yes on C, funded by prepay, with B as the fallback.",
+    "call": "",
+    "optionScores": {
+     "A": 3,
+     "B": 6,
+     "C": 7
+    },
+    "pillar": 8,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "hormozi",
+    "disagreeLine": "Hormozi. His line is that money doesn't fix the sales constraint, and a closer and a better offer do. He's half right. On the Replacement Ladder (S020), sales is rung four: \"Most Founders should keep those conversation.\" (S020) A rep hired before scripts exist fails within six months (S031), and today nobody has recorded a single call. An assistant at $1,500 a month (S066) plus an onboarding owner frees about 25 of his 65 hours, and those hours go into sales. The closer comes once sales takes half his week and 20 calls are on tape (Camcorder Method, S020).",
+    "concede": "Hormozi on where the money comes from. My own brain says to look at non-dilutive options first (S100) and \"I want to finance my growth through my customer financing\" (S030). One correction: the $120k is pulled forward, so it isn't new money. With 60 customers on annual plans, monthly collections drop about $12k for a year, and the $6k monthly profit becomes roughly minus $6k. The new cash is the $30k in setup fees. That covers rungs one and two, about $80k a year by my assumption. It does not also cover a closer.",
+    "moved": "yes, from B to C with prepay first, because Hormozi showed a way to fund the first two rungs with customer cash, and my own non-dilutive rule (S100, S030) outranks \"You should not be capital constraint.\" (S017)",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "Most Founders should keep those conversation.",
+     "source": "S020",
+     "verified": true
+    },
+    {
+     "quote": "I want to finance my growth through my customer financing",
+     "source": "S030",
+     "verified": true
+    },
+    {
+     "quote": "You should not be capital constraint.",
+     "source": "S017",
+     "verified": true
+    }
+   ],
+   "name": "Dan Martell"
+  },
+  {
+   "type": "seat_done",
+   "t": 37,
+   "round": 2,
+   "seat": "wickman",
+   "text": "I DISAGREE MOST WITH: HORMOZI. His argument: annual prepay raises $120k with zero dilution, so C plus a closer does the job. With all due love and respect, that money is float. It's ten months of revenue you'd collect anyway, pulled forward at a two-month discount. Runway goes from 5.3 months to 8.8 and then shrinks again. It can't pay for two seats at about $25k a month for a year. And who runs the campaign, hires the closer, and trains him? The CEO, at 65 hours. Option C leaves one person in three seats (Accountability Chart, S044).\nI CONCEDE: The clock. A full V/TO won't be done in three weeks, so I'm dropping that requirement. One day covers what this decision needs: Core Focus, the 10-Year Target, and the 18-month chart. Hormozi's prepay offer should also go out this week. It costs nothing, and the count comes back before the deadline.\nON THE CRUXES:\n1. Yes. Prepay is a bridge. The $1M buys the seats.\n2. It's a leak. Losing 26% of customers a year is a Process problem, because onboarding lives in the CEO's head.\n3. An onboarding owner first, then a closer. Then run GWC on the technical co-founder as Integrator.\n4. One day, by October 16. If they're still split, A is dead. Bezos is right that it's a one-way door, and a split team doesn't walk through one. After that it's live with it, end it, or change it (S067). B wins if both can live with it.\nSTANCE: Conditional yes on B\nOPTION SCORES: A 2/10 · B 7/10 · C 5/10 · PILLAR SCORE: 6/10 · CONFIDENCE: 3/5 · RUIN RISK: none\nMOVED: yes, from \"sign a V/TO before replying\" to \"one-day session by October 16,\" because the deadline argument holds.\nMY CONDITIONS FOR YES:\n1. Both co-founders sign the Core Focus (shops under 10 technicians) and an 18-month Accountability Chart by October 16.\n2. The first $300k pays for an onboarding owner and a closer. By day 90 the CEO is out of onboarding and works under 50 hours a week.\n3. Monthly logo churn goes on the weekly Scorecard, owned by the onboarding owner, and is under 2% by day 90.",
+   "parsed": {
+    "stance": "Conditional yes on B",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 5
+    },
+    "pillar": 6,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "hormozi",
+    "disagreeLine": "HORMOZI. His argument: annual prepay raises $120k with zero dilution, so C plus a closer does the job. With all due love and respect, that money is float. It's ten months of revenue you'd collect anyway, pulled forward at a two-month discount. Runway goes from 5.3 months to 8.8 and then shrinks again. It can't pay for two seats at about $25k a month for a year. And who runs the campaign, hires the closer, and trains him? The CEO, at 65 hours. Option C leaves one person in three seats (Accountability Chart, S044).",
+    "concede": "The clock. A full V/TO won't be done in three weeks, so I'm dropping that requirement. One day covers what this decision needs: Core Focus, the 10-Year Target, and the 18-month chart. Hormozi's prepay offer should also go out this week. It costs nothing, and the count comes back before the deadline.",
+    "moved": "yes, from \"sign a V/TO before replying\" to \"one-day session by October 16,\" because the deadline argument holds.",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [],
+   "name": "Gino Wickman"
+  },
+  {
+   "type": "seat_done",
+   "t": 37,
+   "round": 2,
+   "seat": "garyvee",
+   "text": "I DISAGREE MOST WITH: HORMOZI. His argument: the constraint is sales, so a closer plus a better offer, on C, does the job. My rebuttal: a closer converts demand. He doesn't create it. All 13 gross logos a month come from one Facebook group the CEO runs. Add a closer to that same funnel and he takes the same 13 calls, and 4% a month for five years lands near $5M ARR. That group is beachfront property, and neither funded rival serves it (Day Trading Attention, S096).\nI CONCEDE: Martell is right that the CEO's calendar comes first, and Graham is right on churn. \"All that good marketing does against a bad product is speeding up everyone knowing that your product sucks.\" [S064, 2025] So content is not the first full-time hire.\nON THE CRUXES:\n1. Take B, and run Hormozi's annual prepay as well. More cash in hand means more leverage (S050, 2026-03).\n2. It's a leak: 26% of customers a year. Fix it before amplifying anything. The churn calls tell us what to say.\n3. A closer and an onboarding owner first. Then a part-time editor who cuts recorded calls into clips (Document, don't create, S143, 2016).\n4. I defer to Wickman. On the CEO's fear: if the funded rivals outspend you, they're buying search, and in 2026 I said search is where yellow pages were in 2001 (S045, 2026-03).\nSTANCE: Yes on B. Distribution gets the second dollar, not the first.\nOPTION SCORES: A 3/10 · B 7/10 · C 6/10 · PILLAR SCORE: 7/10 · CONFIDENCE: 3/5 · RUIN RISK: none\nMOVED: yes, from a content hire next to the closer to a part-time editor hired after the closer and onboarding owner, because Martell showed the CEO's hours are the constraint.\nMY CONDITIONS FOR YES:\n1. Set aside $3k a month of the $1M for an editor for 12 months, with 30 clips a week live by November 9.\n2. Tag every new customer by source. Organic gross adds reach 18 a month by day 90, or the editor goes.\n3. No paid media until churn is under 2% a month. After that, put $100 behind any clip that gets 2x median views.",
+   "parsed": {
+    "stance": "Yes on B. Distribution gets the second dollar, not the first.",
+    "call": "",
+    "optionScores": {
+     "A": 3,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 7,
+    "finalScore": null,
+    "confidence": 3,
+    "ruin": "none",
+    "door": "",
+    "disagreeWith": "hormozi",
+    "disagreeLine": "HORMOZI. His argument: the constraint is sales, so a closer plus a better offer, on C, does the job. My rebuttal: a closer converts demand. He doesn't create it. All 13 gross logos a month come from one Facebook group the CEO runs. Add a closer to that same funnel and he takes the same 13 calls, and 4% a month for five years lands near $5M ARR. That group is beachfront property, and neither funded rival serves it (Day Trading Attention, S096).",
+    "concede": "Martell is right that the CEO's calendar comes first, and Graham is right on churn. \"All that good marketing does against a bad product is speeding up everyone knowing that your product sucks.\" [S064, 2025] So content is not the first full-time hire.",
+    "moved": "yes, from a content hire next to the closer to a part-time editor hired after the closer and onboarding owner, because Martell showed the CEO's hours are the constraint.",
+    "vote": "",
+    "amendment": "",
+    "oneLine": "",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "All that good marketing does against a bad product is speeding up everyone knowing that your product sucks.",
+     "source": "S064",
+     "verified": true
+    }
+   ],
+   "name": "Gary Vaynerchuk"
+  },
+  {
+   "type": "round_done",
+   "t": 37,
+   "round": 2,
+   "scores": {
+    "A": {
+     "score": 2.2,
+     "math": "(2x2 + 3x2 + 2x2 + 1x3 + 2x3 + 2x2 + 3x2) / 15"
+    },
+    "B": {
+     "score": 6.9,
+     "math": "(2x8 + 3x7 + 2x8 + 1x7 + 2x6 + 2x7 + 3x6) / 15"
+    },
+    "C": {
+     "score": 6.1,
+     "math": "(2x6 + 3x6 + 2x5 + 1x6 + 2x7 + 2x5 + 3x7) / 15"
+    }
+   }
+  },
+  {
+   "type": "phase",
+   "t": 37,
+   "phase": "draft",
+   "label": "The Chair is weighing the debate",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "draft",
+   "t": 37,
+   "draft": {
+    "option": "B",
+    "label": "GO WITH CONDITIONS",
+    "recommendation": "Decline the $4M seed. Raise $1M from operator angels after both co-founders sign one memo, and spend it on an onboarding owner first and a closer second.",
+    "conditions": [
+     "Signed co-founder memo by October 16",
+     "Four of five angels soft-commit by day 7"
+    ],
+    "next_steps": [
+     "Offer annual prepay to all 200 customers this week"
+    ],
+    "cheapest_test": "Prepay offer plus churn calls before any signature.",
+    "kill_criteria": "No memo by October 16 means take no money."
+   }
+  },
+  {
+   "type": "phase",
+   "t": 37,
+   "phase": "round3",
+   "label": "Round 3: the vote",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "round_start",
+   "t": 37,
+   "round": 3,
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "bezos"
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "graham"
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "hormozi"
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "garyvee"
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "martell"
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "wickman"
+  },
+  {
+   "type": "seat_start",
+   "t": 37,
+   "round": 3,
+   "seat": "buffett"
+  },
+  {
+   "type": "seat_done",
+   "t": 37,
+   "round": 3,
+   "seat": "graham",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 7 · C 6 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 7/10\nAMENDMENT: The day-14 rule picks C based on how many customers prepay. Sixty prepays show that customers want the product, but they don't add runway, because monthly collections drop by about $12k. Run C only if the onboarding owner is still hired within 30 days and the company stays default alive at 4% monthly growth (Default alive or default dead, S080).\nONE LINE FOR THE FOUNDER: Churn is your cheapest growth lever. Cutting it from 2.5% to 1.5% takes growth from 4% to 5% a month, which is 18.7x over five years instead of 10.5x, and no round buys you that (Startup = Growth, S100).",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 7,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "Churn is your cheapest growth lever. Cutting it from 2.5% to 1.5% takes growth from 4% to 5% a month, which is 18.7x over five years instead of 10.5x, and no round buys you that (Startup = Growth, S100).",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [],
+   "name": "Paul Graham"
+  },
+  {
+   "type": "seat_done",
+   "t": 38,
+   "round": 3,
+   "seat": "buffett",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 7 · C 6 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 7/10\nAMENDMENT: Add a cash floor. Cash never drops below 12 months of burn, assuming revenue falls by a third, and if it does, the closer hire freezes (Financial staying power, S095). I moved from C to B because the room put the onboarding owner first, and at about $25k a month for two hires, C runs out of cash in about 10 months, which my one-hire math missed.\nONE LINE FOR THE FOUNDER: 8% of a $50M outcome is $4M, so every angel dollar has to come back as four. Spend it like that, because \"A string of wonderful numbers times zero will always equal zero.\" (S095)",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 6
+    },
+    "pillar": 7,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "8% of a $50M outcome is $4M, so every angel dollar has to come back as four. Spend it like that, because \"A string of wonderful numbers times zero will always equal zero.\" (S095)",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "A string of wonderful numbers times zero will always equal zero.",
+     "source": "S095",
+     "verified": true
+    }
+   ],
+   "name": "Warren Buffett"
+  },
+  {
+   "type": "seat_done",
+   "t": 38,
+   "round": 3,
+   "seat": "bezos",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 8 · C 6 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 8/10\nAMENDMENT: Move \"tell the VC no\" from days 1 to 7 to the moment both founders sign the memo. Declining A is the one step in this plan you can't undo, and the CEO still leans A, so that no should come from both founders, with nobody forcing it on the other.\nONE LINE FOR THE FOUNDER: The money is a two-way door at 8%, but your co-founder isn't, so settle the split on paper first, then go serve shops under 10 technicians, who will still want fast onboarding and fast support ten years from now.",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 8,
+     "C": 6
+    },
+    "pillar": 8,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "The money is a two-way door at 8%, but your co-founder isn't, so settle the split on paper first, then go serve shops under 10 technicians, who will still want fast onboarding and fast support ten years from now.",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [],
+   "name": "Jeff Bezos"
+  },
+  {
+   "type": "seat_done",
+   "t": 38,
+   "round": 3,
+   "seat": "hormozi",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 8 · C 6 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 8/10\nAMENDMENT: The day-14 switch to C should need more than 60 prepays. It should also need cash after both hires to cover 12 months. I already showed that prepay is next year's revenue collected early: 60 yeses still leave C at about -$31k a month and roughly 9.7 months of runway, so if that test fails, sign B.\nONE LINE FOR THE FOUNDER: \"If you do not have what's called revenue retention, you have nothing.\" (S107) A closer pouring leads into 2.5% churn caps you near 520 customers, so fix onboarding first and then hire the closer to sell.",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 8,
+     "C": 6
+    },
+    "pillar": 8,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "\"If you do not have what's called revenue retention, you have nothing.\" (S107) A closer pouring leads into 2.5% churn caps you near 520 customers, so fix onboarding first and then hire the closer to sell.",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "If you do not have what's called revenue retention, you have nothing.",
+     "source": "S107",
+     "verified": true
+    }
+   ],
+   "name": "Alex Hormozi"
+  },
+  {
+   "type": "seat_done",
+   "t": 38,
+   "round": 3,
+   "seat": "martell",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 7 · C 7 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 8/10\nAMENDMENT: The assistant needs a date. Hire by day 14, and the assistant owns 100% of inbox and calendar by day 30, because \"If you don't have an assistant you are one.\" (S031) Also, record every sales call starting day 1 (Camcorder Method, S020). That way the closer has 20 tapes by day 60 and the CEO doesn't become the training manual.\nONE LINE FOR THE FOUNDER: Your 65 hours are the constraint, not the cash. Start the 15-minute time audit this week (Buyback Loop, S036). Every hour you buy back goes into sales calls, not rest, because \"Entrepreneurs will not grow into pain.\" (S014) Miss 50 hours by day 90 and no round will save you.",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 7
+    },
+    "pillar": 8,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "Your 65 hours are the constraint, not the cash. Start the 15-minute time audit this week (Buyback Loop, S036). Every hour you buy back goes into sales calls, not rest, because \"Entrepreneurs will not grow into pain.\" (S014) Miss 50 hours by day 90 and no round will save you.",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "If you don't have an assistant you are one.",
+     "source": "S031",
+     "verified": true
+    },
+    {
+     "quote": "Entrepreneurs will not grow into pain.",
+     "source": "S014",
+     "verified": true
+    }
+   ],
+   "name": "Dan Martell"
+  },
+  {
+   "type": "seat_done",
+   "t": 38,
+   "round": 3,
+   "seat": "wickman",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 7 · C 5 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 7/10\nAMENDMENT: The October 16 memo names one Integrator, checked with GWC (most likely the technical co-founder), and gives each day 1 to 7 task one owner who is not the CEO. A plan that runs through a 65-hour CEO isn't a plan (Visionary and Integrator, S035). Logo churn goes on the weekly Scorecard on day 1, owned by the Integrator until the onboarding owner starts.\nONE LINE FOR THE FOUNDER: \"We always teach structure first, people second.\" (S044) Draw the chart with names in the seats before you spend a dollar of that $1M. This week, book the off-site day. Stay focused.",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 7,
+     "C": 5
+    },
+    "pillar": 7,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "\"We always teach structure first, people second.\" (S044) Draw the chart with names in the seats before you spend a dollar of that $1M. This week, book the off-site day. Stay focused.",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [
+    {
+     "quote": "We always teach structure first, people second.",
+     "source": "S044",
+     "verified": true
+    }
+   ],
+   "name": "Gino Wickman"
+  },
+  {
+   "type": "seat_done",
+   "t": 38,
+   "round": 3,
+   "seat": "garyvee",
+   "text": "VOTE: Endorse with amendment · OPTION SCORES: A 2 · B 8 · C 6 · FINAL SCORE: 8/10 · FINAL PILLAR SCORE: 6/10\nAMENDMENT: Tag every new customer by source starting day 1. Once churn is under 2% at day 90, pay a part-time editor $3k a month to cut the closer's recorded calls into clips for the Facebook group (Document, don't create, S143, 2016). If organic gross adds are not at 18 a month by month six, the editor goes.\nONE LINE FOR THE FOUNDER: You already own the beachfront property. That Facebook group is where shops under 10 technicians are paying attention, and neither funded rival is in it, so fix churn first and then show up in that group every single day (Day Trading Attention, S096).",
+   "parsed": {
+    "stance": "",
+    "call": "",
+    "optionScores": {
+     "A": 2,
+     "B": 8,
+     "C": 6
+    },
+    "pillar": 6,
+    "finalScore": 8,
+    "confidence": null,
+    "ruin": "",
+    "door": "",
+    "disagreeWith": null,
+    "disagreeLine": "",
+    "concede": "",
+    "moved": "",
+    "vote": "amend",
+    "amendment": "",
+    "oneLine": "You already own the beachfront property. That Facebook group is where shops under 10 technicians are paying attention, and neither funded rival is in it, so fix churn first and then show up in that group every single day (Day Trading Attention, S096).",
+    "question": "",
+    "risk": "",
+    "thisWeek": ""
+   },
+   "quotes": [],
+   "name": "Gary Vaynerchuk"
+  },
+  {
+   "type": "round_done",
+   "t": 38,
+   "round": 3,
+   "scores": {
+    "A": {
+     "score": 2,
+     "math": "(2x2 + 3x2 + 2x2 + 1x2 + 2x2 + 2x2 + 3x2) / 15"
+    },
+    "B": {
+     "score": 7.3,
+     "math": "(2x8 + 3x7 + 2x8 + 1x8 + 2x7 + 2x7 + 3x7) / 15"
+    },
+    "C": {
+     "score": 6,
+     "math": "(2x6 + 3x6 + 2x6 + 1x6 + 2x7 + 2x5 + 3x6) / 15"
+    }
+   }
+  },
+  {
+   "type": "phase",
+   "t": 38,
+   "phase": "verdict",
+   "label": "The Chair is writing the verdict",
+   "at": 1793168382839.5176
+  },
+  {
+   "type": "verdict",
+   "t": 39,
+   "verdict": {
+    "label": "GO WITH CONDITIONS",
+    "call": "Turn down the $4M seed and raise the $1M from operator angels once both co-founders sign one memo. Spend it on an onboarding owner first and a closer second.",
+    "override_note": "",
+    "why": [
+     {
+      "point": "A 3x-in-18-months mandate needs 6.3% monthly growth from a company growing 4% with no paid engine.",
+      "seat": "Graham",
+      "framework": "Startup = Growth"
+     },
+     {
+      "point": "The constraint is the CEO's 65-hour week and 2.5% churn, not cash.",
+      "seat": "Martell",
+      "framework": "Buyback Rate"
+     },
+     {
+      "point": "Cutting churn from 2.5% to 1.5% is the cheapest growth lever on the table.",
+      "seat": "Hormozi",
+      "framework": "Constraint first"
+     }
+    ],
+    "fights": [
+     {
+      "crux": "Is customer cash enough?",
+      "story": "Hormozi corrected his own prepay math and moved to B; Buffett moved back to B in Round 3."
+     }
+    ],
+    "minority": {
+     "seat": "Martell",
+     "quote": "Your 65 hours are the constraint, not the cash.",
+     "would_have_to_be_true": "60 or more customers prepay and cash covers 12 months after both hires."
+    },
+    "amendments": [],
+    "conditions": [
+     "Both co-founders sign a one-page memo by October 16",
+     "Cash never below 12 months of burn"
+    ],
+    "next_steps": [
+     {
+      "when": "This week",
+      "action": "Offer annual prepay to all 200 customers and call every churned customer."
+     },
+     {
+      "when": "Oct 16",
+      "action": "Sign the memo, tell the VC no, confirm the angels."
+     },
+     {
+      "when": "Day 30",
+      "action": "Onboarding owner in seat, owning churn."
+     }
+    ],
+    "cheapest_test": "The prepay offer plus the churn calls, before any signature.",
+    "kill_criteria": "No signed memo by October 16, or churn above 2% at day 90.",
+    "revisit": "Day 90.",
+    "recommended": "B",
+    "scores": {
+     "A": {
+      "score": 2,
+      "math": "(2x2 + 3x2 + 2x2 + 1x2 + 2x2 + 2x2 + 3x2) / 15"
+     },
+     "B": {
+      "score": 7.3,
+      "math": "(2x8 + 3x7 + 2x8 + 1x8 + 2x7 + 2x7 + 3x7) / 15"
+     },
+     "C": {
+      "score": 6,
+      "math": "(2x6 + 3x6 + 2x6 + 1x6 + 2x7 + 2x5 + 3x6) / 15"
+     }
+    },
+    "spread": 1,
+    "confidence": 7,
+    "support": 8,
+    "votes": {
+     "amend": 7
+    },
+    "disclaimer": "Simulated advisors built from each person's public work. They are not the people and do not speak for them."
+   },
+   "seats": [
+    {
+     "key": "bezos",
+     "weight": 2,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 8,
+      "C": 6
+     },
+     "pillar": 8,
+     "moved": "yes, from \"close the angels this week\" to \"soft-commit this week, sign after both founders agree,\" because Wickman showed the co-founder split makes signing a fake two-way door.",
+     "oneLine": "The money is a two-way door at 8%, but your co-founder isn't, so settle the split on paper first, then go serve shops under 10 technicians, who will still want fast onboarding and fast support ten years from now."
+    },
+    {
+     "key": "graham",
+     "weight": 3,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 7,
+      "C": 6
+     },
+     "pillar": 7,
+     "moved": "no. Prepay helps C's cash. C's weak spot was its growth rate, and prepay doesn't touch that.",
+     "oneLine": "Churn is your cheapest growth lever. Cutting it from 2.5% to 1.5% takes growth from 4% to 5% a month, which is 18.7x over five years instead of 10.5x, and no round buys you that (Startup = Growth, S100)."
+    },
+    {
+     "key": "hormozi",
+     "weight": 2,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 8,
+      "C": 6
+     },
+     "pillar": 8,
+     "moved": "yes, from C to B, because prepay is next year's revenue collected early. It doesn't pay for the seats.",
+     "oneLine": "\"If you do not have what's called revenue retention, you have nothing.\" (S107) A closer pouring leads into 2.5% churn caps you near 520 customers, so fix onboarding first and then hire the closer to sell."
+    },
+    {
+     "key": "garyvee",
+     "weight": 1,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 8,
+      "C": 6
+     },
+     "pillar": 6,
+     "moved": "yes, from a content hire next to the closer to a part-time editor hired after the closer and onboarding owner, because Martell showed the CEO's hours are the constraint.",
+     "oneLine": "You already own the beachfront property. That Facebook group is where shops under 10 technicians are paying attention, and neither funded rival is in it, so fix churn first and then show up in that group every single day (Day Trading Attention, S096)."
+    },
+    {
+     "key": "martell",
+     "weight": 2,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 7,
+      "C": 7
+     },
+     "pillar": 8,
+     "moved": "yes, from B to C with prepay first, because Hormozi showed a way to fund the first two rungs with customer cash, and my own non-dilutive rule (S100, S030) outranks \"You should not be capital constraint.\" (S017)",
+     "oneLine": "Your 65 hours are the constraint, not the cash. Start the 15-minute time audit this week (Buyback Loop, S036). Every hour you buy back goes into sales calls, not rest, because \"Entrepreneurs will not grow into pain.\" (S014) Miss 50 hours by day 90 and no round will save you."
+    },
+    {
+     "key": "wickman",
+     "weight": 2,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 7,
+      "C": 5
+     },
+     "pillar": 7,
+     "moved": "yes, from \"sign a V/TO before replying\" to \"one-day session by October 16,\" because the deadline argument holds.",
+     "oneLine": "\"We always teach structure first, people second.\" (S044) Draw the chart with names in the seats before you spend a dollar of that $1M. This week, book the off-site day. Stay focused."
+    },
+    {
+     "key": "buffett",
+     "weight": 3,
+     "stance": "amend",
+     "optionScores": {
+      "A": 2,
+      "B": 7,
+      "C": 6
+     },
+     "pillar": 7,
+     "moved": "yes, from B to C. By my own tests the prepay is cheaper capital, and C pays for a closer out of profit.",
+     "oneLine": "8% of a $50M outcome is $4M, so every angel dollar has to come back as four. Spend it like that, because \"A string of wonderful numbers times zero will always equal zero.\" (S095)"
+    }
+   ]
+  }
+ ]
+}

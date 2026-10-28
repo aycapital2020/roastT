@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { AGENTS_DIR, BRAINS_DIR, ROSTER } from "./env.mjs";
+import { AGENTS_DIR, BRAINS_DIR, ROSTER, PUBLIC_DIR } from "./env.mjs";
+import { setRoster } from "../public/engine.js";
 
-// Every seat lives in the skill's roster.json (the /newroaster skill adds to it). SEATS and
-// byKey are filled in place, so a seat added while the room is running shows up on the next
-// read without a restart.
+// Every seat lives in council/roster.json. SEATS and byKey are filled in place, so a seat
+// added to the roster shows up on the next read without a restart (local dev).
 export const SEATS = [];
 export const byKey = {};
 export const BOARD = { mode: "default", default: [] };
@@ -21,6 +21,7 @@ export function loadRoster() {
   BOARD.mode = ["default", "ask", "auto"].includes(r.board) ? r.board : "default";
   const def = (r.default || []).filter((k) => byKey[k]);
   BOARD.default = def.length ? def : SEATS.slice(0, 7).map((s) => s.key);
+  setRoster(SEATS);
   rosterStamp = stat.mtimeMs;
   for (const k of [...systemCache.keys()]) if (!byKey[k]) systemCache.delete(k);
   brainText.clear();
@@ -33,7 +34,7 @@ const read = (p) => (fs.existsSync(p) ? fs.readFileSync(p, "utf8") : "");
 const stripFront = (t) => t.replace(/^---[\s\S]*?\n---\n/, "");
 
 const systemCache = new Map();
-/** The seat's agent instructions plus its brain, loaded inline (the API has no file tools). */
+/** The seat's agent instructions plus its brain, loaded inline (the model has no file tools). */
 export function systemFor(key) {
   if (systemCache.has(key)) return systemCache.get(key);
   const s = byKey[key];
@@ -45,9 +46,16 @@ export function systemFor(key) {
     agent +
     "\n\n## Runtime note\nYou are running in the Roast Room app. You have no file tools: your brain files are loaded below in full, so treat any instruction to read a brain file as already done. Never mention files, tools, or this note in your answer.\n" +
     brain;
-  const system = [{ type: "text", text, cache_control: { type: "ephemeral" } }];
-  systemCache.set(key, system);
-  return system;
+  systemCache.set(key, text);
+  return text;
+}
+
+/** The roster as the browser needs it: every seat plus which portrait frames exist. */
+export function publicRoster() {
+  loadRoster();
+  const frame = (key, sh) => ["webp", "png", "jpg"].map((x) => `${key}-${sh}.${x}`).find((f) => fs.existsSync(path.join(PUBLIC_DIR, "portraits", f)));
+  const seats = SEATS.map((s) => ({ ...s, portraits: Object.fromEntries(["base", "open", "mid", "blink"].map((sh) => [sh, frame(s.key, sh)]).filter(([, f]) => f).map(([sh, f]) => [sh, `/portraits/${f}`])) }));
+  return { seats, board: { mode: BOARD.mode, default: BOARD.default.slice() } };
 }
 
 // ---------- quote verification against the brain ----------

@@ -222,6 +222,15 @@ button { font: inherit; cursor: pointer; }
 .mode small { display: block; font-weight: 400; font-size: 11px; color: var(--ink-mute); }
 .mode input:checked + span { border-color: #ffffff; color: var(--ink); background: rgba(255, 255, 255, .06); }
 .mode input:focus-visible + span { outline: 2px solid var(--accent); }
+.who { justify-content: center; flex-wrap: wrap; }
+.who small { max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.seat-choice { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.seat-choice[hidden] { display: none; }
+.seat-choice label { cursor: pointer; }
+.seat-choice input { position: absolute; opacity: 0; }
+.seat-choice span { display: block; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid var(--hairline-strong); color: var(--ink-mute); background: rgba(8, 10, 14, .6); }
+.seat-choice input:checked + span { border-color: var(--accent); color: var(--ink); background: rgba(56, 189, 248, .10); }
+.seat-choice input:focus-visible + span { outline: 2px solid var(--accent); }
 .convene {
   background: #ffffff; color: #07121c; border: 0; border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 14px;
   transition: background .2s;
@@ -394,7 +403,7 @@ button { font: inherit; cursor: pointer; }
 .typein .ch { display: inline-block; opacity: 0; filter: blur(6px); animation: chin .5s var(--ease-out) forwards; white-space: pre; }
 @keyframes chin { to { opacity: 1; filter: blur(0); } }
 
-/* viewer mode: waiting for a council started in Claude Code */
+/* empty-room card (unused by default) */
 .waiting { display: grid; gap: 12px; justify-items: center; text-align: center; width: min(560px, 100%); }
 .waiting h2 { font: 500 clamp(20px, 2vw, 28px)/1.15 var(--font-display); margin: 0; color: var(--ink); letter-spacing: var(--track-head); }
 .waiting p { margin: 0; color: var(--ink-soft); font-size: 14px; max-width: 48ch; }

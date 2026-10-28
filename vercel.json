@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "node app/scripts/build.mjs",
+  "outputDirectory": "app/public",
+  "functions": {
+    "api/*.mjs": {
+      "maxDuration": 300,
+      "includeFiles": "council/**"
+    }
+  }
+}
