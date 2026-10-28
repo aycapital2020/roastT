@@ -54,6 +54,15 @@ Your choice is remembered in the browser. `"board"` in `council/roster.json` set
 
 Click **Past sessions**. Three finished councils ship with the repo, so you can replay them and download their PDFs without making a single model call.
 
+## Listen to the council
+
+Press **Listen** at the top and every advisor reads their lines aloud as the debate plays, live or in a replayed example. Each seat has its own voice and the Chair has another. It uses your browser's built-in speech (the Web Speech API), so there is no paid text-to-speech and no extra key. Voices depend on your browser and OS; with only one or two installed, seats still sound different through pitch and pace.
+
+- Lines are queued, so two advisors never talk over each other, and the playback speed also speeds up the voices.
+- **Mute** silences the room without turning Listen off. **Skip speaker** moves on to the next line. **Skip ahead** jumps to the end.
+- The speaker button on any line in Key points plays just that turn, even with Listen off.
+- Your Listen choice is remembered in this browser. Browsers only allow sound after a click, so the voices start once you press Convene or pick a past council.
+
 ## How it works
 
 - **The browser runs the council.** A full council is a few dozen short calls, so instead of one long server job the page orchestrates it: one call to the Chair for setup, one per seat per round, one each for cruxes, the draft, and the verdict. Every call is its own small function request (`/api/chair`, `/api/seat`), so nothing hits a function time limit, and a failed call is retried on its own.

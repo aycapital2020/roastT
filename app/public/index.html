@@ -27,6 +27,7 @@
     </ol>
     <div class="top-actions">
       <span class="usage" id="usage" title="Tokens used by this app since it started"></span>
+      <button class="ghost listen" id="listenBtn" type="button" aria-pressed="false" title="Hear each advisor read their lines aloud">Listen: off</button>
       <button class="ghost" id="guideBtn" type="button">How it works</button>
       <button class="ghost" id="historyBtn" type="button">Past sessions</button>
       <button class="ghost" id="newBtn" type="button" hidden>New question</button>
@@ -104,6 +105,8 @@
             <button type="button" data-speed="1.6" aria-pressed="false">1.6x</button>
             <button type="button" data-speed="2.5" aria-pressed="false">2.5x</button>
           </div>
+          <button type="button" class="skip" id="muteBtn" aria-pressed="false" hidden>Mute</button>
+          <button type="button" class="skip" id="skipLineBtn" title="Skip the advisor speaking now">Skip speaker</button>
           <button type="button" class="skip" id="skipBtn">Skip ahead</button>
         </div>
       </div>

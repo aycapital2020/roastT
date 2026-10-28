@@ -1,6 +1,7 @@
 import { downloadVerdictPdf } from "./pdf.js";
 import { runCouncil, usage, listLocal, loadLocal, saveLocal } from "./runner.js";
 import { setRoster } from "./engine.js";
+import { voice } from "./voice.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -52,6 +53,7 @@ const GUIDE = `
         <li><span><b>Full council:</b> 5 to 7 advisors, 3 rounds. For big calls that are hard to undo. A few minutes.</span></li>
         <li><span><b>Quick:</b> 4 advisors and 2 rounds. Faster and cheaper.</span></li>
         <li><span><b>Who sits:</b> let the Chair pick the advisors that fit your question, seat your default board, or choose them yourself.</span></li>
+        <li><span><b>Listen:</b> turn it on at the top and each advisor reads their lines aloud in their own voice, with the Chair in another. It uses your browser's built-in voices. Press the speaker on any line to hear just that turn.</span></li>
         <li><span><b>Saved in this browser.</b> Open Past sessions to replay a council or download its PDF. Clearing site data removes them.</span></li>
         <li><span><b>Powered by xAI Grok</b> through Vercel AI Gateway: one model call per seat per round, plus the Chair.</span></li>
       </ul>
@@ -102,6 +104,7 @@ const state = {
 // ------------------------------------------------------------- boot
 async function boot() {
   await refreshSeats();
+  voice.init(state.seats.map((s) => s.key));
   renderSeats(state.board);
   renderSamples();
   renderPicker();
@@ -123,6 +126,7 @@ async function refreshSeats() {
   state.seats = r.seats;
   state.byKey = Object.fromEntries(r.seats.map((s) => [s.key, s]));
   setRoster(r.seats);
+  voice.setSeats(r.seats.map((s) => s.key));
   state.defaultBoard = (r.board?.default || []).filter((k) => state.byKey[k]);
   if (!state.defaultBoard.length) state.defaultBoard = r.seats.slice(0, 7).map((s) => s.key);
   state.board = state.defaultBoard.slice();
@@ -282,7 +286,11 @@ function bindUI() {
   $("#seats").addEventListener("click", openFrom);
   $("#plates").addEventListener("click", openFrom);
   $("#seats").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFrom(e); } });
-  $("#feed").addEventListener("click", (e) => { const c = e.target.closest(".feed-card"); if (c) openCard(c.dataset.seat, Number(c.dataset.round)); });
+  $("#feed").addEventListener("click", (e) => {
+    const say = e.target.closest("[data-say]");
+    if (say) { e.stopPropagation(); playTurn(say); return; }
+    const c = e.target.closest(".feed-card"); if (c) openCard(c.dataset.seat, Number(c.dataset.round));
+  });
   $("#waitHistory").addEventListener("click", openHistory);
   $("#waitGuide").addEventListener("click", openGuide);
   $("#guideBtn").addEventListener("click", openGuide);
@@ -313,10 +321,38 @@ function bindUI() {
   });
   $$(".speed button").forEach((b) => b.addEventListener("click", () => {
     player.speed = Number(b.dataset.speed);
+    voice.rate = Math.min(1.6, player.speed);
     $$(".speed button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
   }));
   $("#skipBtn").addEventListener("click", () => player.skip());
+  $("#skipLineBtn").addEventListener("click", () => player.skipLine());
+  $("#listenBtn").addEventListener("click", () => { voice.setOn(!voice.on); syncListen(); toast(voice.on ? "Listen is on. Each advisor reads their lines aloud." : "Listen is off."); });
+  $("#muteBtn").addEventListener("click", () => { voice.muted = !voice.muted; if (voice.muted) voice.stop(); syncListen(); });
+  syncListen();
 }
+
+// ------------------------------------------------------------- listening
+function syncListen() {
+  const b = $("#listenBtn");
+  if (!voice.supported) { b.disabled = true; b.title = "This browser has no built-in speech"; b.textContent = "Listen: n/a"; $("#muteBtn").hidden = true; return; }
+  b.setAttribute("aria-pressed", String(voice.on));
+  b.textContent = voice.on ? "Listen: on" : "Listen: off";
+  b.title = voice.on ? "Turn off reading aloud" : "Hear each advisor read their lines aloud";
+  const m = $("#muteBtn");
+  m.hidden = !voice.on;
+  m.textContent = voice.muted ? "Unmute" : "Mute";
+  m.setAttribute("aria-pressed", String(voice.muted));
+}
+
+/** A "play this turn" button: reads that one line now, even with Listen off. */
+function playTurn(btn) {
+  const key = btn.dataset.say || null;
+  const text = btn.dataset.text || "";
+  $$("[data-say].playing").forEach((x) => x.classList.remove("playing"));
+  btn.classList.add("playing");
+  voice.playNow(key, text).then(() => btn.classList.remove("playing"));
+}
+const sayBtn = (key, text) => `<button type="button" class="say" data-say="${esc(key || "")}" data-text="${esc(text)}" title="Play this turn" aria-label="Play this turn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6h2.5L9 3v10L5.5 10H3z" fill="currentColor"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.6 3.8a6 6 0 0 1 0 8.4" stroke="currentColor" fill="none" stroke-width="1.3" stroke-linecap="round"/></svg></button>`;
 
 // ------------------------------------------------------------- the player
 // Every event goes through one ordered queue. Seats speak one at a time, at a
@@ -342,8 +378,11 @@ const player = {
     return new Promise((res) => { const t = setTimeout(() => { this.timers.delete(o); res(); }, ms / this.speed); const o = { t, res }; this.timers.add(o); });
   },
   flushTimers() { for (const o of this.timers) { clearTimeout(o.t); o.res(); } this.timers.clear(); },
-  skip() { this.fast = true; this.flushTimers(); },
-  reset() { this.epoch++; this.q.length = 0; this.fast = true; this.flushTimers(); this.busy = false; this.fast = false; this.info(); },
+  skip() { this.fast = true; this.flushTimers(); voice.stop(); },
+  // skip only the line being spoken right now; the rest plays on
+  lineSkip: false,
+  skipLine() { this.lineSkip = true; voice.skip(); this.flushTimers(); },
+  reset() { voice.stop(); this.epoch++; this.q.length = 0; this.fast = true; this.flushTimers(); this.busy = false; this.fast = false; this.info(); },
   info() {
     const waiting = this.q.filter((e) => e.type === "seat_done").length;
     $("#queueInfo").textContent = waiting ? `${waiting} lines up next` : "";
@@ -442,20 +481,20 @@ async function handle(ev) {
       feedPhase(ev.label);
       const thinking = ["setup", "cruxes", "draft", "verdict"].includes(ev.phase);
       if (thinking || ev.phase === "skip3") {
-        chairSays(ev.label.replace(/^The Chair is /, "").replace(/^./, (c) => c.toUpperCase()), { dots: thinking });
-        await player.sleep(1400);
+        const said = chairSays(ev.label.replace(/^The Chair is /, "").replace(/^./, (c) => c.toUpperCase()), { dots: thinking });
+        await Promise.all([player.sleep(1400), said]);
       }
       break;
     }
-    case "setup": state.setup = ev; await onSetup(ev); await player.sleep(1800); break;
-    case "round_start": onRoundStart(ev.round); break;
+    case "setup": state.setup = ev; { const said = await onSetup(ev); await Promise.all([player.sleep(1800), said]); } break;
+    case "round_start": await onRoundStart(ev.round); break;
     case "seat_start": $(`#seat-${ev.seat}`)?.classList.add("thinking"); break;
     case "seat_done": await onSeatDone(ev); break;
     case "round_done": state.wait = null; updateOptions(ev.scores); break;
     case "cruxes": await onCruxes(ev); break;
     case "draft": await onDraft(ev.draft); break;
     case "verdict": state.wait = null; onVerdict(ev); break;
-    case "error": state.wait = null; toast(`The council stopped: ${ev.error}`); chairSays(`The council stopped: ${ev.error}`); break;
+    case "error": state.wait = null; toast(`The council stopped: ${ev.error}`); chairSays(`The council stopped: ${ev.error}`, { say: "The council stopped. The model could not answer." }); break;
   }
 }
 
@@ -480,7 +519,7 @@ async function onSetup(ev) {
     const w = ev.weights[s.key]?.weight || 1;
     pl.title = `Weight ${w} of 3: ${ev.weights[s.key]?.reason || ""}`;
   }
-  chairSays(ev.title, { tag: ev.mode === "quick" ? "Quick council" : "Full council" });
+  return chairSays(ev.title, { tag: ev.mode === "quick" ? "Quick council" : "Full council", say: `On the table: ${ev.title}` });
 }
 
 function updateOptions(scores) {
@@ -499,7 +538,7 @@ function onRoundStart(round) {
   state.links = [];
   drawLinks();
   $("#cruxes").hidden = true;
-  chairSays(`${["", "Round 1: opening positions", "Round 2: the debate", "Round 3: the vote"][round]}`, { dots: true, tag: "The floor is open" });
+  return chairSays(`${["", "Round 1: opening positions", "Round 2: the debate", "Round 3: the vote"][round]}`, { dots: true, tag: "The floor is open" });
 }
 
 // ------------------------------------------------------------- talking
@@ -562,7 +601,8 @@ function captionFor(who) {
   $("#capWho").textContent = s ? s.name : "The Chair";
 }
 
-function chairSays(text, { dots = false, tag = "" } = {}) {
+/** The Chair's caption. Returns a promise that resolves when the Chair has said it aloud (if Listen is on). */
+function chairSays(text, { dots = false, tag = "", say = text } = {}) {
   setSpeaker(null);
   captionFor(null);
   $("#capTag").textContent = tag;
@@ -570,6 +610,7 @@ function chairSays(text, { dots = false, tag = "" } = {}) {
   p.className = "cap-text chair";
   p.innerHTML = esc(text) + (dots ? '<span class="dots"><i></i><i></i><i></i></span>' : "");
   $("#capSub").textContent = "";
+  return say ? voice.say(null, say) : Promise.resolve();
 }
 
 async function speak(key, text, { tag = "", target = null, sub = "" } = {}) {
@@ -582,8 +623,10 @@ async function speak(key, text, { tag = "", target = null, sub = "" } = {}) {
   const words = text.split(" ").filter(Boolean);
   p.innerHTML = words.map((w) => `<span class="w">${esc(w)}</span> `).join("");
   const spans = $$(".w", p);
+  player.lineSkip = false;
+  const said = player.fast ? Promise.resolve() : voice.say(key, text); // spoken in step with the words
   for (let i = 0; i < words.length; i++) {
-    if (player.fast) break;
+    if (player.fast || player.lineSkip) break;
     const w = words[i];
     spans[i].classList.add("on");
     const shapes = shapesFor(w.replace(/[^a-z]/gi, ""));
@@ -596,6 +639,8 @@ async function speak(key, text, { tag = "", target = null, sub = "" } = {}) {
   spans.forEach((s) => s.classList.add("on"));
   setShape(key, "base");
   $("#capSub").innerHTML = sub;
+  await said; // the voice can run longer than the words on screen; wait so speakers never overlap
+  if (player.lineSkip) { player.lineSkip = false; await player.sleep(250); return; }
   await player.sleep(1300);
 }
 
@@ -682,18 +727,21 @@ async function onCruxes(ev) {
     ev.cruxes.map((x, i) => `<div class="crux" style="animation-delay:${i * 0.18}s"><b>${esc(x.question)}</b><div class="sides">${x.sides.map((sd) => `<span class="side"><span class="faces">${sd.seats.filter((k) => state.byKey[k]).map(face).join("")}</span>${esc(shorten(sd.position, 48))}</span>`).join("")}</div></div>`).join("");
   const f = document.createElement("div");
   f.className = "feed-note";
-  f.innerHTML = `<b>The fight:</b> ${ev.cruxes.map((x) => esc(x.question)).join(" ")}`;
+  const fight = ev.cruxes.map((x) => x.question).join(" ");
+  const line = (ev.unanimous ? "Too much agreement. The Chair pushes back. " : "Here is what they're fighting about. ") + fight;
+  f.innerHTML = `<b>The fight:</b> ${ev.cruxes.map((x) => esc(x.question)).join(" ")}${sayBtn(null, line)}`;
   feedAppend(f);
-  await player.sleep(3500 + 1800 * ev.cruxes.length);
+  await Promise.all([player.sleep(3500 + 1800 * ev.cruxes.length), voice.say(null, line)]);
 }
 
 async function onDraft(d) {
-  chairSays(`Proposal: ${d.label} on option ${d.option}. ${firstSentences(clean(d.recommendation), 140)}`, { tag: "Up for a vote" });
+  const line = `Proposal: ${d.label} on option ${d.option}. ${firstSentences(clean(d.recommendation), 140)}`;
+  const said = chairSays(line, { tag: "Up for a vote" });
   const f = document.createElement("div");
   f.className = "feed-note";
-  f.innerHTML = `<b>Up for a vote:</b> ${esc(d.label)} on option ${esc(d.option)}.`;
+  f.innerHTML = `<b>Up for a vote:</b> ${esc(d.label)} on option ${esc(d.option)}.${sayBtn(null, line)}`;
   feedAppend(f);
-  await player.sleep(4200);
+  await Promise.all([player.sleep(4200), said]);
 }
 
 // ------------------------------------------------------------- rebuttal arcs
@@ -736,7 +784,7 @@ function feedCard(round, seat, parsed) {
   const top = topOption(parsed.optionScores);
   const tgt = parsed.disagreeWith ? state.byKey[parsed.disagreeWith]?.short : "";
   const what = round === 1 ? `${stanceWord(parsed.stance)}${top ? `, backs ${top.id}` : ""}` : round === 2 ? (tgt ? `vs ${tgt}` : "Debate") : `Votes ${parsed.vote || "endorse"}`;
-  d.innerHTML = `<img class="av" src="${portrait(seat)}" alt=""><div><div class="h">${esc(s.short)}<span class="r">${esc(what)}</span></div><p>${esc(lineFor(round, parsed, 105))}</p></div>`;
+  d.innerHTML = `<img class="av" src="${portrait(seat)}" alt=""><div><div class="h">${esc(s.short)}<span class="r">${esc(what)}</span>${sayBtn(seat, lineFor(round, parsed) || "I'll put it in my card.")}</div><p>${esc(lineFor(round, parsed, 105))}</p></div>`;
   feedAppend(d);
 }
 
@@ -817,8 +865,10 @@ function onVerdict(ev) {
   $("#playbar").hidden = true;
   const f = document.createElement("div");
   f.className = "feed-note";
-  f.innerHTML = `<b>Verdict: ${esc(v.label)}.</b> ${esc(firstSentences(clean(v.call), 160))}`;
+  const spoken = `The council's verdict: ${v.label}. ${firstSentences(clean(v.call), 320)}`;
+  f.innerHTML = `<b>Verdict: ${esc(v.label)}.</b> ${esc(firstSentences(clean(v.call), 160))}${sayBtn(null, spoken)}`;
   feedAppend(f);
+  voice.say(null, spoken);
   setTimeout(() => { if (state.verdict === ev) $("#verdictSheet").hidden = false; }, 1600);
 }
 
